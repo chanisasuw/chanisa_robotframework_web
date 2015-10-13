@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="RVSiteBuilder6" default="">
+    <property name="browser" value=""/>
+    <property name="cpmode" value=""/>
+    <property name="cpserver" value=""/>
+    <property name="remotebrowser" value=""/>
+    <property name="cpadminport" value=""/>
+    <property name="cpadminname" value=""/>
+    <property name="cpadminpassword" value=""/>
+    <property name="cpuserport" value=""/>
+    <property name="cpusername" value=""/>
+    <property name="cpuserpassword" value=""/>
+	
+    <target name="build" depends="prepare,setupatddconf,runatdd" />
+     <target name="test" depends="prepare,setupatddconf,runatdd" />
+
+	<target name="clean" description="Cleanup build artifacts">
+		<delete dir="${basedir}/build/atdd" />
+	</target>
+
+	<target name="prepare" depends="clean" description="Prepare for build">
+		<mkdir dir="${basedir}/build/atdd" />
+	</target>
+    
+    <target name="setupatddconf" description="Setup ATDD Config">
+        <echo>==============================================================================
+ATDD Configuration
+Test on Selenium Server: ${remotebrowser} 
+Test on browser: ${browser} 
+Test on cpmode: ${cpmode} 
+Test on cpserver: ${cpserver}
+==============================================================================</echo>
+        <concat destfile="${basedir}/build/atdd.arg">--variable
+REMOTEBROWSER:${remotebrowser}
+--variable
+BROWSER:${browser}
+--variable
+CPMODE:${cpmode}
+--variable
+CPSERVER:${cpserver}
+--variable
+CPADMINPORT:${cpadminport}
+--variable
+CPADMINNAME:${cpadminname}
+--variable
+CPADMINPASSWORD:${cpadminpassword}
+--variable
+CPUSERPORT:${cpuserport}
+--variable
+CPUSERNAME:${cpusername}
+--variable
+CPUSERPASSWORD:${cpuserpassword}
+--outputdir
+build/atdd</concat>
+    </target>
+    
+    <target name="runatdd" description="Run ATDD">
+        <exec executable="pybot">
+            <arg value="--argumentfile=${basedir}/build/atdd.arg" />
+            <arg path="${basedir}/Tests" />
+        </exec>
+        <delete file="${basedir}/build/atdd.arg"/>
+    </target>
+</project>
