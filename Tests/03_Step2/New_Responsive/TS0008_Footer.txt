@@ -1,0 +1,51 @@
+*** Settings ***
+Documentation     UserStep2 Test suite
+Suite Setup       Run Step 2 New Reponsive Suite Setup
+Suite Teardown    Run Step 2 Page Suite Teardown
+Default Tags      User    UserStep2
+Resource          ../../Step2PageSuite.txt
+
+*** Test Cases ***
+TC01: Set Footer Full Width
+	Given user want to update footer template
+	When user set footer    fluidfooter
+	Then show footer full width in layout template
+
+TC02: Set Footer fixed width
+	Given user want to update footer template
+	When user set footer    fixedfooter
+	Then show footer fixed width in layout template
+
+TC03: Enable Copyright Text
+	Given user want to update footer template
+	When user setting copyright text    © 2002-2015 RVGlobalsoft Inc. All rights reserved.
+	Then show footer copyright text in layout template    © 2002-2015 RVGlobalsoft Inc. All rights reserved.
+
+TC04: Disable Copyright Text
+	Given user want to update footer template
+	When user setting copyright text    © 2002-2015 Netway communication. All rights reserved.
+	and disable show copyright
+	Then not show footer copyright text in layout template    © 2002-2015 Netway communication. All rights reserved.
+
+TC05: Enable Sitemap
+	Given user want to update footer template
+	When user setting show sitemap
+	Then show footer site map in layout template
+
+TC06: Disable Sitemap
+	Given user want to update footer template
+	When user setting disable sitemap
+	Then not show footer site map in layout template
+
+TC07: Enable Contact Information settings
+	Given user want to update footer template
+	When user setting contact information
+	and enable google map
+	Then show footer contact information in layout template
+
+TC08: Disable Contact Information and Google Map
+	Given user want to update footer template
+	When user setting contact information
+	and user disable google map
+	Then not show footer contact information in layout template
+

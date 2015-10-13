@@ -1,0 +1,40 @@
+*** Settings ***
+Documentation     Manage Extras
+Suite Setup       Run Step 3 Page Suite Setup
+Suite Teardown    Run Step 3 Page Suite Teardown
+Default Tags      User    UserStep3
+Resource          ../Step3PageSuite.txt
+
+*** Test Cases ***
+TC01: Edit Page Title
+	Given user want go to main menu    STEP3
+	When select page for edit page title
+	Then page title rename to new name
+
+TC02: Reset page title
+	When select page for rename page title
+	Then page should reset to page name by default
+
+TC03: Edit Page Title if over 255 characters
+	When select page for edit page title over 255 characters
+	Then user cannot save page title
+
+TC04: Setting meta tags
+	When select page for setting meta tags    Home Page    The first page
+	Then home page has meta keyword and description
+
+TC05: Reset meta tags to default
+	When user click reset meta keyword
+	Then home page has meta keyword and description be empty
+
+TC06: Setting meta tags but meta keyword and description if over 500 characters
+	When select page for setting meta tags    ${500charecters}   ${500charecters} 
+	Then user cannot save meta tags and meta description
+
+TC07: Setting Page Effect
+	When update action page effect
+	Then user successfully updated page effect
+
+TC08: Setting Page File Name
+	When update page file name
+	Then user successfully updated page file name

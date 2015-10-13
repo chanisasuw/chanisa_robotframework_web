@@ -1,0 +1,50 @@
+*** Settings ***
+Documentation     CRUD Project of RVSitebuilder
+Suite Setup       Run Home Page Suite Setup
+Suite Teardown    Run Home Page Suite Teardown
+Default Tags      User    UserHome
+Resource          ../HomePageSuite.txt
+
+*** Test Cases ***
+TC01: Create a new project
+    Given a user want to create a new project
+    when user create a new project    QA Test
+    then go to step 1
+    and user can create project name    QA Test
+
+TC02: Create a project if name is duplicated
+    Given a user has an invalid project name
+    when user create a new project    QA Test
+    then user cannot create any project    Project name is already taken.
+
+TC03: Create a project if name is be blank
+    Given a user has an invalid project name
+    when user create a new project    ${EMPTY}
+    then user cannot create any project    The process cannot go further if the required field is empty. Please fill it.
+
+TC04: Edit a project
+    Given user want to edit project
+    when edit project from home page
+    then user can edit project in step 3 page
+    Go To Default Page
+
+TC05: Rename a project
+    Given a user has a valid name
+    when user rename a project    Quality Assurance
+    then user can edit project name    Quality Assurance
+
+TC06: Rename a project if name is duplicated
+    Given a user has an invalid name
+    when user rename a project    Quality Assurance
+    then user cannot rename invalid project
+
+TC07: Rename a project if name is be blank
+    Given a user has an invalid name
+    when user rename a project    ${EMPTY}
+    then user cannot rename invalid project
+
+TC08: Delete a project
+    Given a user has a valid project
+    when user delete project
+    then user cannot edit deleted project anymore
+

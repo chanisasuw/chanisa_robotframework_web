@@ -1,0 +1,47 @@
+*** Settings ***
+Documentation     Master Page
+Suite Setup       Run Master Page Suite Setup
+Suite Teardown    Run Master Page Suite Teardown
+Default Tags      User    AllPages
+Resource          ../MasterPageSuite.txt
+
+
+*** Test Cases ***
+TC01: User cannot add master page with Online Form
+	Go To Step3 Page
+	Given a user want to view master page in form add page
+	when add component without master page    ${OnlineForm}
+	then user cannot use master page
+
+TC02: User cannot add master page with GuestBook
+	Given a user want to view master page in form add page
+	when add component without master page    ${GuestBook}
+	then user cannot use master page
+
+TC03: User cannot add master page with Newsletter
+	Given a user want to view master page in form add page
+	when add component without master page    ${Newsletter}
+	then user cannot use master page
+
+TC04: User cannot add master page with Blog
+	Given a user want to view master page in form add page
+	when add component without master page    ${Blog}
+	then user cannot use master page
+
+TC05: User cannot add master page with FAQ
+	Given a user want to view master page in form add page
+	when add component without master page    ${FAQ}
+	then user cannot use master page
+
+TC06: User cannot add master page with Photo Gallery
+	Given a user want to view master page in form add page
+	when add component without master page    ${PhotoGallery}
+	then user cannot use master page
+
+*** Variables ***
+${OnlineForm}    xpath=.//*[@id='addComponentPage']/div/a[1]
+${GuestBook}    xpath=.//*[@id='addComponentPage']/div/a[2]
+${Newsletter}    xpath=.//*[@id='addComponentPage']/div/a[3]
+${Blog}    xpath=.//*[@id='addComponentPage']/div/a[4]
+${FAQ}    xpath=.//*[@id='addComponentPage']/div/a[5]
+${PhotoGallery}    xpath=.//*[@id='addComponentPage']/div/a[6]

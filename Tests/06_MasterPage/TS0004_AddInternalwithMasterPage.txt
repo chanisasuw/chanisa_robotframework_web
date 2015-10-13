@@ -1,0 +1,34 @@
+*** Settings ***
+Documentation     Master Page
+Suite Setup       Run Master Page Suite Setup
+Suite Teardown    Run Master Page Suite Teardown
+Default Tags      User    AllPages
+Resource          ../MasterPageSuite.txt
+
+*** Variables ***
+${name}    six_test_QA
+
+*** Test Cases ***
+TC01: create internal page without master page
+	Go To Step3 Page
+	Given a user want to create a new master page
+	when user create master page    ${name}    16_0
+	then user have new master page    ${name}    16 Grid Column
+	Given a user want to view master page in form add page
+	when add internal page without master page
+	then show a new page and master page     ...
+
+TC02: Cannot add master page if page is blank page
+	Given a user want to view master page in form add page
+	when add internal page (blank page) with master page
+	then user cannot use master page
+
+TC03: create internal page and add master page
+	Given a user want to view master page in form add page
+	when user add internal page
+	then show a new page and master page    ${name}
+
+TC04: edit master page at internal page
+	Given user want to view internal page list    ${name}
+	when edit master page
+	then show edit layout page    ${name}

@@ -1,0 +1,17 @@
+*** Settings ***
+Resource          ../Resources/Common.txt
+
+*** Keywords ***
+Run Admin Page Suite Setup
+    #${proxy}=    Evaluate    sys.modules['selenium.webdriver'].Proxy()    sys, selenium.webdriver
+    #${proxy.http_proxy}=    Set Variable    192.168.1.122:1234
+    #Create Webdriver    ${BROWSER}    proxy=${proxy}
+    Import Resource    ${CURDIR}/../Resources/Common_kw.txt
+    Log    Run AdminPage suite setup on ${CPMODE}
+    Load Resources by CP Mode
+    Do Login To Control Panel With Admin
+    Go To    ${WEBROOT}
+
+Run Admin Page Suite Teardown
+    Log    Run AdminPage suite teardown
+    Do Close Browser

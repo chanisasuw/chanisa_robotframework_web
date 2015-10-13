@@ -1,0 +1,42 @@
+*** Settings ***
+Documentation     UserStep2 Test suite
+Suite Setup       Run Step 2 New Reponsive Suite Setup
+Suite Teardown    Run Step 2 Page Suite Teardown
+Default Tags      User    UserStep2
+Resource          ../../Step2PageSuite.txt
+
+*** Test Cases ***
+Navigation Style
+    Given user want to update template
+    When user set a new style
+    Then display style in the template
+
+Navigation alignment Center
+	Given user want to update template
+	When user set a new navigation align to    Center
+	Then display navigation position    Center
+
+Navigation alignment left
+	Given user want to update template
+	When user set a new navigation align to    Left
+	Then display navigation position    Left
+
+Navigation alignment right
+	Given user want to update template
+	When user set a new navigation align to    Right
+	Then display navigation position    Right
+
+Navigation font text
+	Given user want to update template
+	When user set font text to    Arial
+	Then display navigation font text    Arial
+
+Navigation font size
+	Given user want to update template
+	When user set font size to    18px
+	Then display navigation font size   18px
+
+Navigation color advanced
+	Given user want to update template
+	When user set navigation color by advanced
+	Then display navigation color in the template

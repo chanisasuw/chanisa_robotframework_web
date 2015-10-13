@@ -1,0 +1,35 @@
+*** Settings ***
+Documentation    .Restore a project
+Suite Setup       Run All Pages Suite Setup
+Suite Teardown    Run All Pages Suite Teardown
+Default Tags      User    AllPages
+Resource          ../AllPagesSuite.txt
+
+
+*** Test Cases ***
+TC01: User restore a project at Step Home
+    Given a user go to RVSitebuilder    link=HOME
+    when user restore a project
+    then show form restore project
+
+TC02: User brestore a project at Step1
+    Given a user go to RVSitebuilder    link=STEP1
+    when user restore a project
+    then show form restore project
+
+TC03: User restore a project at Step2
+    Given a user go to RVSitebuilder    link=STEP2
+    when user restore a project
+    then show form restore project
+
+TC04: User restore a project at Step3
+    Given a user go to RVSitebuilder    link=STEP3
+    when user restore a project
+    then show form restore project
+    Delete project
+
+TC05: User restore a project if don't have a project
+    Given a user go to RVSitebuilder    link=HOME
+    and close dialog
+    when user restore a project
+    then show form restore project

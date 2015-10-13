@@ -1,0 +1,15 @@
+*** Settings ***
+Documentation     Backup a project
+Suite Setup       Run Home Page Suite Setup
+Suite Teardown    Run Home Page Suite Teardown
+Default Tags      User    UserHome
+Resource          ../HomePageSuite.txt
+
+*** Test Cases ***
+TC01: Backup a project
+	Create a project first
+	Go To Default Page
+    Given a user want to backup a current project
+    when user backup a project
+    then user has been saved file on my destination drive
+	Delete project

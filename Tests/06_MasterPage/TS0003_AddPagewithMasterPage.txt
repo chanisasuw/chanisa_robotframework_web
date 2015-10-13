@@ -1,0 +1,31 @@
+*** Settings ***
+Documentation     Master Page
+Suite Setup       Run Master Page Suite Setup
+Suite Teardown    Run Master Page Suite Teardown
+Default Tags      User    AllPages
+Resource          ../MasterPageSuite.txt
+
+*** Variables ***
+${name}    six_test_QA
+
+*** Test Cases ***
+TC01: create page without master page
+	Go To Step3 Page
+	Given a user want to create a new master page
+	when user create master page    ${name}    16_0
+	then user have new master page    ${name}    16 Grid Column
+	Given a user want to view master page in form add page
+	when add page without master page
+	then show a new page and master page     ...
+
+TC02: Cannot add master page if page is external url
+	Given a user want to view master page in form add page
+	when add page (external url) with master page
+	then user cannot use master page
+
+TC03: create page and add master page
+	Given a user want to view master page in form add page
+	when add page with master page
+	then show a new page and master page    ${name}
+
+##switch ไม่ได้

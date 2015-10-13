@@ -1,0 +1,45 @@
+*** Settings ***
+Documentation     Search a Template
+Suite Setup       Run User Page Suite Setup
+Suite Teardown    Run User Page Suite Teardown
+Default Tags      User    UserStep1
+Resource          ../Step1PageSuite.txt
+
+*** Test Cases ***
+#Search Template by invalid value
+Search Template by null value
+	Given user want to search template
+	When search template by    ${EMPTY}
+	Then display no template
+
+Search Template by invalid keyword
+	Given user want to search template
+	When search template by    fern
+	Then display no template
+
+Search Template by invalid id
+	Given user want to search template
+	When search template by    ก234
+	Then display no template
+
+#Search Template by valid value
+Search Template by category
+	Given user want to search template
+	when search template by    Books
+	Then display template list
+
+Search Template by keyword
+	Given user want to search template
+	when search template by    flower
+	Then display template list
+
+Search Template by category that not have template
+	Given user want to search template
+	when search template by    Blog
+	Then display no template
+	
+## Comment if search by id effect field not hide ##
+Search Template by id
+	Given user want to search template
+	When search template by    3-413
+	Then display template list

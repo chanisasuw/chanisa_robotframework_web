@@ -1,0 +1,582 @@
+** Settings ***
+Resource        ../Resources/Common.txt
+Resource        ../Resources/Setup.txt
+
+*** Keywords ***
+
+###  setting suite  ####
+Run Step 2 Page Suite Setup
+    Import Resource    ${CURDIR}/../Resources/Common_kw.txt
+    Log    Run UserPage suite setup on ${CPMODE}
+    Load Resources by CP Mode
+    Do Login To Control Panel With User
+    Go to    ${WEBROOT}
+    Crete a project for Step2
+
+###  setting suite  ####
+Go To Default Page
+    Go to    ${WEBROOT}/adjustStyle
+
+Run Step 2 Page Suite Teardown
+    Delete project
+    Logout cPanel
+    Log    Run UserPage suite teardown
+    Do Close Browser
+
+## Non-Reponsive Templates ##
+Run Step 2 Non-Reponsive Suite Setup
+    Import Resource    ${CURDIR}/../Resources/Common_kw.txt
+    Log    Run UserPage suite setup on ${CPMODE}
+    Load Resources by CP Mode
+    Do Login To Control Panel With User
+    Go to    ${WEBROOT}
+    Crete a project for Step2
+
+## Reponsive Templates ##
+Run Step 2 Reponsive Suite Setup
+    Import Resource    ${CURDIR}/../Resources/Common_kw.txt
+    Log    Run UserPage suite setup on ${CPMODE}
+    Load Resources by CP Mode
+    Do Login To Control Panel With User
+    Go to    ${WEBROOT}
+    Restore project responsive
+
+## New Responsive Templates ##
+Run Step 2 New Reponsive Suite Setup
+    Import Resource    ${CURDIR}/../Resources/Common_kw.txt
+    Log    Run UserPage suite setup on ${CPMODE}
+    Load Resources by CP Mode
+    Do Login To Control Panel With User
+    Go to    ${WEBROOT}
+    Create a project first
+    Import New responsive Template
+
+## Test Cases ##
+Given user want to update template
+    Go to    ${WEBROOT}/sitebuilder/adjustStyle
+
+When user add a new image
+    [Arguments]    ${uploadimagepath}
+    Click Element    id=add_imgHeaderBanner
+    Choose File    uploadImgHeaderBannerSave    ${uploadimagepath}
+
+Then the system will crop automatically
+    Click Button    OK
+
+Then show header 2 in slide image
+    Wait Until Page Contains Element    showImgHeaderBanner
+    Page Should Contain Element    showImgHeaderBanner    header 2
+
+Then user can not upload image
+    Page Should Contain Element    uploadHeaderWarning
+    Mouse Over    button_ea4788705e6873b424c65e91c2846b19
+    Click Button    button_ea4788705e6873b424c65e91c2846b19
+    Page Should Not Contain    header 3
+
+## Delete Image ##
+When user delete image
+    Click Element    xpath=//div[@id='showDialogDelete'][1]
+    Page Should Contain Element    DeleteImgHeaderBanner
+    Click Button    Delete
+
+Then image was deleted not show in header banner
+    Page Should Not Contain    header 2
+
+## edit image ##
+when user update existing image
+    Click Element    id=showDialogEdit
+    Page Should Contain Element    xpath=//img[@check_flip='0']
+    Click Element    eventFlipImgHd
+    Page Should Contain Element    xpath=//img[@check_flip='1']
+    Click Button    OK
+
+Then show a new image flip on header banner
+    Page Should Contain Element    showImgHeaderBanner    header 1
+    Page Should Not Contain    header 2
+
+## Branding Logo ##
+When user upload my logo to template
+    [Arguments]    ${logo}
+    Click Element    xpath=//*[@id="ui-accordion-accordionNew-panel-0"]/div[2]/div[3]
+    Page Should Contain Element    HeadUploadImg
+    Choose File    uploadImgHeaderSave    ${logo}
+    Click Button    OK
+
+When user not upload file
+    Click Element    xpath=//*[@id="ui-accordion-accordionNew-panel-0"]/div[2]/div[3]
+    Page Should Contain Element    HeadUploadImg
+    Click Button    OK
+
+Then show my logo in current layout template
+    Select Frame    id=preview
+    Page Should Contain Element    xpath=//img[@id='img_Layer1']
+
+Then user cannot upload logo and show error message file not supported
+    Page Should Contain    You choose the unsupported one. Please upload an image file with a .gif, .jpg, .jpeg, or .png file extension.
+
+Then user cannot upload logo and show error message select file
+    Page Should Contain    Please select an image to upload. The following image types are supported: .gif, .jpg, .jpeg, .png
+
+# Add New logo #
+When user change my logo
+    [Arguments]    ${logo}
+    Select Frame    id=preview
+    Click Element    xpath=//img[@id='img_Layer1']
+    Click Element    xpath=.//*[@id='contextLayer1']/div[1]/a[1]/img[@class='logoedit']
+    Select Window    title=Rvglobalsoft :: STEP2
+    Choose File    uploadImgHeaderSave    ${logo}
+    Click Button    OK
+
+Then show a new logo in current layout template
+    Page Should Not Contain Element    xpath=//a[@class='iconAddlogo']
+    Select Frame    id=preview
+    Page Should Contain Element    xpath=//img[@id='img_Layer1']
+
+# Lock #
+When user lock the logo
+    Select Frame    id=preview
+    Click Element    xpath=//img[@id='img_Layer1']
+    Page Should Contain Element    xpath=.//*[@id='contextLayer1']/div[1]/a[3]/img[@title='Lock']
+    Click Element    xpath=.//*[@id='contextLayer1']/div[1]/a[3]/img
+
+Then show logo is locked
+    Page Should Contain Element    xpath=.//*[@id='contextLayer1']/div[1]/a[3]/img[@title='Unlock']
+
+# Unlock #
+When user unlock the logo
+    Click Element    xpath=//img[@id='img_Layer1']
+    Page Should Contain Element    xpath=.//*[@id='contextLayer1']/div[1]/a[3]/img[@title='Unlock']
+    Click Element    xpath=.//*[@id='contextLayer1']/div[1]/a[3]/img
+
+Then show logo is unlocked
+    Page Should Contain Element    xpath=.//*[@id='contextLayer1']/div[1]/a[3]/img[@title='Lock']
+
+# Delete Logo #
+When user delete my logo
+    Select Frame    id=preview
+    Click Element    xpath=//img[@id='img_Layer1']
+    Click Element    xpath=.//*[@id='contextLayer1']/div[1]/a[2]/img[@class='logodelete']
+    Select Window    title=Rvglobalsoft :: STEP2
+    Click Button    Delete
+
+Then not show logo in current layout template
+    Reload Page
+    Select Frame    id=preview
+    Page Should Not Contain Element    xpath=//img[@id=img_Layer1]
+
+
+## Navigation Position ##
+When user setting navigation postion
+    [Arguments]    ${xpath}
+    Click Element    xpath=${xpath}
+
+Then show navigation position Above Banner correctly
+    Page Should Contain Element    xpath=//*[@id="rsTemplateMaster"][@value="HDSP+HB+NAV"]
+    Click Element    id=submitSave
+    Reload Page
+    Page Should Contain Element    xpath=//*[@id="rsTemplateMaster"][@value="HDSP+HB+NAV"]
+
+Then show navigation position Topmost correctly
+    Page Should Contain Element    xpath=//*[@id="rsTemplateMaster"][@value="NAV+HDSP+HB"]
+    Click Element    id=submitSave
+    Reload Page
+    Page Should Contain Element    xpath=//*[@id="rsTemplateMaster"][@value="NAV+HDSP+HB"]
+
+Then show navigation position Underneath Banner correctly
+    Page Should Contain Element    xpath=//*[@id="rsTemplateMaster"][@value="HDSP+NAV+HB"]
+    Click Element    id=submitSave
+    Reload Page
+    Page Should Contain Element    xpath=//*[@id="rsTemplateMaster"][@value="HDSP+NAV+HB"]
+
+## Space Color ##
+When user select a new space color
+    Click Element    id=headerBgColor
+    Click Element    xpath=.//*[@id='headerBgColor']/div[2]/div[6]/div[10]
+
+Then show new space color in template
+    Page Should Contain Element    id=headerBgColorValue    \#33E4FF
+    Click Element    id=submitSave
+    Reload Page
+    Page Should Contain Element    id=headerBgColorValue    \#33E4FF
+
+## Branding Company name ##
+When user add company name
+    Click Element    id=companynotshow
+    Page Should Contain Element    id=zoneWysi    Insert Company Name
+
+Then show text in template
+    Click Element    xpath=.//*[@id='zoneWysi']/div/div[3]/input[2]
+
+Then not show text in template
+    Click Element    xpath=.//*[@id='zoneWysi']/div/div[3]/input[1]
+    Page Should Contain Element     id=MsgerrorLayername    You inserted the empty value, please try again.
+    Click Element    xpath=.//*[@id='zoneWysi']/div/div[3]/input[2]
+
+When user add slogan name
+    Click Element    xpath=.//*[@id='ui-accordion-accordionNew-panel-0']/div[2]/div[2]
+    Page Should Contain Element    id=zoneWysi    Insert Slogan
+
+When user edit slogan name
+    Select Frame    id=preview
+    Page Should Contain Element    xpath=//*[@id="Layer3"]
+    Click Element    xpath=//*[@id="Layer3"]
+    Click Element    xpath=.//*[@id='contextLayer3']/div[1]/a[1]/img
+    Unselect Frame
+    Click Element    xpath=.//*[@id='zoneWysi']/div/div[3]/input[2]
+
+Then show slogan name in template
+    Select Frame    id=preview
+    Page Should Contain Element    xpath=.//*[@id='contextLayer3']/div[1]/a[1]/img
+
+When user delete slogan
+    Select Frame    id=preview
+    Page Should Contain Element    xpath=//*[@id="Layer2"]
+    Click Element    xpath=//*[@id="Layer3"]
+    Click Element    xpath=.//*[@id='contextLayer3']/div[1]/a[2]/img
+    Unselect Frame
+    Click Element    xpath=.//*[@id='button_f2a6c498fb90ee345d997f888fce3b18']
+
+Then not show slogan in template
+    Reload Page
+    Select Frame    id=preview
+    Page Should Not Contain Element    xpath=.//*[@id='contextLayer3']/div[1]/a[1]/img
+
+When user add text name
+    Click Element    id=act_AddText
+    Page Should Contain Element    id=zoneWysi    Insert additional text in header
+
+When user edit company name
+    Select Frame    id=preview
+    Page Should Contain Element    xpath=//*[@id="Layer2"]
+    Click Element    xpath=//*[@id="Layer2"]
+    Click Element    xpath=.//*[@id='contextLayer2']/div[1]/a[1]/img
+    Unselect Frame
+    Click Element    xpath=.//*[@id='zoneWysi']/div/div[3]/input[1]
+
+Then show company name in template
+    Select Frame    id=preview
+    Page Should Contain Element    xpath=.//*[@id='contextLayer2']/div[1]/a[2]/img
+
+When user delete company name
+    Select Frame    id=preview
+    Page Should Contain Element    xpath=//*[@id="Layer2"]
+    Click Element    xpath=//*[@id="Layer2"]
+    Click Element    xpath=.//*[@id='contextLayer2']/div[1]/a[2]/img
+    Unselect Frame
+    Click Element    xpath=.//*[@id='button_f2a6c498fb90ee345d997f888fce3b18']
+
+Then not show company name in template
+    Reload Page
+    Select Frame    id=preview
+    Page Should Not Contain Element    xpath=.//*[@id='contextLayer2']/div[1]/a[2]/img
+    
+## Upload Image ###
+When user upload my image to template
+    [Arguments]    ${headerimage}
+    Click Element    xpath=//*[@id="act_AddImg"]
+    Page Should Contain Element    FrmuploadImgHeader
+    Choose File    uploadImgHeaderSave    ${headerimage}
+    Click Button    OK
+
+Then show my image in current layout template
+    Select Frame    id=preview
+    Page Should Contain Element    xpath=.//img[@class='logoedit']
+
+Then user cannot upload image and show error message select file
+    Page Should Contain    Please select an image to upload. The following image types are supported: .gif, .jpg, .jpeg, .png
+
+Then user cannot upload image and show error message file not supported
+    Page Should Contain    You choose the unsupported one. Please upload an image file with a .gif, .jpg, .jpeg, or .png file extension.
+
+When user change my image
+    [Arguments]    ${newheaderimage}
+    Select Frame    id=preview
+    Click Element    xpath=.//*[@class='custom_layer']/div/img[1]
+    Page Should Contain Element    xpath=.//img[@class='logoedit']
+    Click Element    xpath=.//*[@class='contextLayer']/a[1]/img
+    Select Window    title=Rvglobalsoft :: STEP2
+    Choose File    uploadImgHeaderSave    ${newheaderimage}
+    Click Button    OK
+
+# Lock Image #
+When user lock the image
+    Select Frame    id=preview
+    Click Element    xpath=.//*[@class='custom_layer']/div/img[1]
+    Page Should Contain Element    xpath=.//*[@class='contextLayer']/a[3]/img[@title='Lock']
+    Click Element    xpath=.//*[@class='contextLayer']/a[3]/img
+
+Then show image is locked
+    Page Should Contain Element    xpath=.//*[@class='contextLayer']/a[3]/img[@title='Unlock']
+
+# Unlock Image #
+When user unlock the image
+    Click Element    xpath=.//*[@class='custom_layer']/div/img[1]
+    Page Should Contain Element    xpath=.//*[@class='contextLayer']/a[3]/img[@title='Unlock']
+    Click Element    xpath=.//*[@class='contextLayer']/a[3]/img
+
+Then show image is unlocked
+    Page Should Contain Element    xpath=.//*[@class='contextLayer']/a[3]/img[@title='Lock']
+
+# Delete image #
+When user delete my image
+    Select Frame    id=preview
+    Click Element    xpath=.//*[@class='custom_layer']/div/img[1]
+    Click Element    xpath=.//*[@class='contextLayer']/a[2]/img[@class='logodelete']
+    Select Window    title=Rvglobalsoft :: STEP2
+    Click Button    Delete
+
+Then user don't have image in header banner
+    Select Frame    id=preview
+    Page Should Not Contain Element    xpath=.//*[@class='custom_layer']/div/img[1]
+
+# Navigation style #
+When user set a new style
+    Click Element    css=span.sprMenuLeft.menu_navigation
+    Click Element    id=styleNavigation
+    Click Element    id=nav_29
+    Click Element    id=submitSave
+    Reload Page
+
+Then display style in the template
+    Page Should Contain Element    id=styleNavigation    style5
+
+When user set a new navigation align to
+    [Arguments]    ${positionstyle}
+    Click Element    css=span.sprMenuLeft.menu_navigation
+    Select From List     id=positsionNavAlign    ${positionstyle}
+    Click Element    id=submitSave
+    Reload Page
+
+Then display navigation position
+    [Arguments]    ${style}
+    Click Element    css=span.sprMenuLeft.menu_navigation
+    Page Should Contain Element    id=positsionNavAlign    ${style}
+
+When user set navigation background color
+    Click Element    css=span.sprMenuLeft.menu_navigation
+    Scroll Page To Location    1000    0
+    Click Element    id=navBgColor
+    Click Element    xpath=//*[@id="navigatorBgColor"]/div[2]/div[1]/div[11]
+    Click Element    id=submitSave
+    Reload Page
+
+Then display navigation background color pink #ff1ff0
+    Click Element    css=span.sprMenuLeft.menu_navigation
+    Page Should Contain Element    id=navBgColorValue    /#ff1ff0
+
+When user set font text to
+    [Arguments]    ${fonttext}
+    Click Element    css=span.sprMenuLeft.menu_navigation
+    Scroll Page To Location    1000    0
+    Select From List     id=navFontFamily    ${fonttext}
+    Click Element    id=submitSave
+    Reload Page
+
+Then display navigation font text
+    [Arguments]    ${fonttext}
+    Click Element    css=span.sprMenuLeft.menu_navigation
+    Page Should Contain Element    id=navFontFamily    ${fonttext}
+
+When user set font size to
+    [Arguments]    ${fontsize}
+    Click Element    css=span.sprMenuLeft.menu_navigation
+    Select From List     id=navFontSize    ${fontsize}
+    Click Element    id=submitSave
+    Reload Page
+
+Then display navigation font size
+    [Arguments]    ${fontsize}
+    Click Element    css=span.sprMenuLeft.menu_navigation
+    Page Should Contain Element    id=navFontSize    ${fontsize}
+
+When user set navigation color by advanced
+    Click Element    css=span.sprMenuLeft.menu_navigation
+    Click Element    xpath=//*[@id="navMenuAddvance"]/a
+    Page Should Contain    Your can set your navigation actions, the preview is displayed real-time on screen.
+    Click Button    Reset to default
+    Page Should Contain    Are you sure you want to restore the default settings?
+    Mouse Over    button_e0aa021e21dddbd6d8cecec71e9cf564
+    Click Button    button_e0aa021e21dddbd6d8cecec71e9cf564
+
+Then display navigation color in the template
+    Click Element    xpath=//*[@id="FrmCustomCss_sub"]/table/tbody/tr[7]/td/input[3]
+    Click Element    id=submitSave
+    Reload Page
+
+When user update set hidden navigation
+    Click Element    css=span.sprMenuLeft.menu_navigation
+    Select Checkbox    id=showHideNav-ratio
+    Click Element    id=submitSave
+
+Then layout not show navigation
+    Select Frame    id=preview
+    Page Should Contain Element    xpath=//*[@style="display: none;"]
+    Reload Page
+    Select Frame    id=preview
+    Page Should Contain Element    xpath=//*[@style="display: none;"]
+
+When user update set show navigation
+    Click Element    css=span.sprMenuLeft.menu_navigation
+    Unselect Checkbox    id=showHideNav-ratio
+    Click Element    id=submitSave
+
+Then layout show navigation
+    Select Frame    id=preview
+    Page Should Contain Element    xpath=//*[@style="display: block;"]
+    Reload Page
+    Select Frame    id=preview
+    Page Should Contain Element    xpath=//*[@style="display: block;"]
+    
+
+## Background ##
+When user custom background
+    Click Element    css=span.sprMenuLeft.menu_background
+    Click Element    id=advanceBackground
+    Click Element    xpath=//*[@id="listBackgroundImage"]/img[5]
+    Mouse Over   button_d3d2e617335f08df83599665eef8a418
+    Click Button    button_d3d2e617335f08df83599665eef8a418
+
+Then show a new background in layout template
+    Click Element    id=submitSave
+
+## Site Properties ##
+When user update head tag
+    [Arguments]    ${project_title}    ${keyword}    ${description}    ${embeded}
+    Click Element   css=span.sprMenuLeft.menu_siteProp
+    Click Element   id=openPropertyHead
+    Select Frame    id=editframeLoadSiteProperty
+    Click Element    css=#project_title
+    Input Text    id=project_title    ${project_title}
+    Input Text    id=project_keyword    ${keyword}
+    Input Text    id=project_description    ${description}
+    Input Text    id=project_Embed    ${embeded}
+    Click Element    id=bu_saveHeadSiteProperty
+
+When user edit head tag
+    Click Element   css=span.sprMenuLeft.menu_siteProp
+    Click Element   id=openPropertyHead
+    Select Frame    id=editframeLoadSiteProperty
+    Click Element    id=bu_saveHeadSiteProperty
+
+Then head tag successfully updated
+    Page Should Contain    Site Properties have already been updated
+    Click Element    xpath=//div[40]/div/a/span
+
+Then head tag unsuccessfully updated
+    Page Should Contain    Please insert head title, which contained 1-255 characters
+    Click Element    xpath=//div[40]/div/a/span
+
+When user update body tag
+    Click Element    css=span.sprMenuLeft.menu_siteProp
+    Click Element    id=openPropertyBody
+    Select Frame    id=editframeLoadSiteProperty
+    Click Element    css=#dl_tagBodyAttSiteProperty>dt>div>span
+    Click Element    xpath=//dl[@id='dl_tagBodyAttSiteProperty']/dd/ul/li[2]/div/span
+    Click Element    id=addBodyBySiteproperty
+
+Then user cannot add body tag
+    Page Should Contain    Please select attribute
+    Click Element    xpath=//div[40]/div/a/span
+
+When user update css
+    Click Element    css=span.sprMenuLeft.menu_siteProp
+    Click ELement    id=openPropertyCss
+    Select Frame    id=editframeLoadSiteProperty
+    Click Element    id=bu_saveCssSiteProperty
+
+Then css successfully updated
+    Page Should Contain    Site Properties have already been updated
+    Click Element    xpath=//div[40]/div/a/span
+
+## Footer ##
+Given user want to update footer template
+    Go to    ${WEBROOT}/sitebuilder/adjustStyle
+    Click Element    css=span.sprMenuLeft.menu_footer
+
+When user set footer
+    [Arguments]    ${footerwidth}
+    Select Radio Button    bgChooseStyle    ${footerwidth}
+
+Then show footer full width in layout template
+    Select Frame    id=preview
+    Page Should Contain Element    xpath=.//div[@id='selected_footer']/div[@class='uk-container uk-container-center rv-block-full']
+    Unselect Frame
+    Click Element    id=submitSave
+    Select Frame    id=preview
+    Page Should Contain Element    xpath=.//div[@id='selected_footer']/div[@class='uk-container uk-container-center rv-block-full']
+    Unselect Frame
+
+Then show footer fixed width in layout template
+    Select Frame    id=preview
+    Page Should Not Contain Element    xpath=.//div[@id='selected_footer']/div[@class='uk-container uk-container-center rv-block-full']
+    Unselect Frame
+    Click Element    id=submitSave
+    Select Frame    id=preview
+    Page Should Not Contain Element    xpath=.//div[@id='selected_footer']/div[@class='uk-container uk-container-center rv-block-full']
+    Unselect Frame
+
+When user setting copyright text
+    [Arguments]    ${copyrighttext}
+    Click Element    id=openCopyrightFooter
+    Page Should Contain    "Copyright" Text Settings
+    Input Text    copyrightText    ${copyrighttext}
+
+and disable show copyright
+    Unselect Checkbox    id=showCopyright
+
+Then show footer copyright text in layout template
+    [Arguments]    ${displaycopyrighttext}
+    Mouse Over    id=bu_saveCopyrightFooter
+    Click Element    id=bu_saveCopyrightFooter
+    Select Frame    id=preview
+    Page Should Contain Element   xpath=.//*[@id='copyrightFooter'][@class='uk-text-center uk-width-1-1']    ${displaycopyrighttext}
+    Unselect Frame
+    Click Element    id=submitSave
+    Select Frame    id=preview
+    Page Should Contain Element   xpath=.//*[@id='copyrightFooter'][@class='uk-text-center uk-width-1-1']    ${displaycopyrighttext}
+    Unselect Frame
+
+Then not show footer copyright text in layout template
+    [Arguments]    ${displaycopyrighttext}
+    Mouse Over    id=bu_saveCopyrightFooter
+    Click Element    id=bu_saveCopyrightFooter
+    Select Frame    id=preview
+    Page Should Not Contain Element    xpath=.//*[@id='copyrightFooter'][@class='uk-text-center uk-width-1-1']    ${displaycopyrighttext}
+    Page Should Contain Element    xpath=.//*[@id='copyrightFooter'][@class='uk-footer-displayNone']   
+    Unselect Frame
+    Click Element    id=submitSave
+    Select Frame    id=preview
+    Page Should Not Contain Element    xpath=.//*[@id='copyrightFooter'][@class='uk-text-center uk-width-1-1']    ${displaycopyrighttext}
+    Page Should Contain Element    xpath=.//*[@id='copyrightFooter'][@class='uk-footer-displayNone']
+    Unselect Frame
+
+When user setting show sitemap
+    Click Element    id=openSitemapFooter
+    Select Checkbox    id=showSitemap
+    Mouse Over    id=bu_saveSitemapFooter
+    Click Element    id=bu_saveSitemapFooter
+
+Then show footer site map in layout template
+    Select Frame    id=preview
+    Page Should Contain Element    id=sitemapFooter
+    Page Should Contain Element    xpath=.//*[@id='footerTemplate']/div[3][@class='uk-container uk-container-center rvsb-bg-footer']
+    Unselect Frame
+    Click Element    id=submitSave
+    Select Frame    id=preview
+    Page Should Contain Element    id=sitemapFooter
+    Page Should Contain Element    xpath=.//*[@id='footerTemplate']/div[3][@class='uk-container uk-container-center rvsb-bg-footer']
+    Unselect Frame
+
+When user setting disable sitemap
+    Click Element    id=openSitemapFooter
+    Unselect Checkbox    id=showSitemap
+    Mouse Over    id=bu_saveSitemapFooter
+    Click Element    id=bu_saveSitemapFooter
+
+Then not show footer site map in layout template
+    Select Frame    id=preview
+    Page Should Contain Element    xpath=.//*[@id='footerTemplate']/div[3][@class='uk-container uk-container-center rvsb-bg-footer uk-footer-displayNone']
+    Unselect Frame
+    Click Element    id=submitSave
+    Select Frame    id=preview
+    Page Should Contain Element    xpath=.//*[@id='footerTemplate']/div[3][@class='uk-container uk-container-center rvsb-bg-footer uk-footer-displayNone']

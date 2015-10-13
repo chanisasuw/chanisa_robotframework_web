@@ -1,0 +1,40 @@
+*** Settings ***
+Documentation     UserStep2 Test suite
+Suite Setup       Run Step 2 Reponsive Suite Setup
+Suite Teardown    Run Step 2 Page Suite Teardown
+Default Tags      User    UserStep2
+Resource          ../../Step2PageSuite.txt
+
+*** Test Cases ***
+## Upload Image ##
+Add fill not support to image
+    Given user want to update template
+    When user upload my image to template    ${CURDIR}/TS0001_HeaderSettings.txt
+    Then user cannot upload image and show error message file not supported
+
+Add a new image
+    Given user want to update template
+    When user upload my image to template    ${CURDIR}/../../../File/rvglobalsoft.jpg
+    Then show my image in current layout template
+
+Update a new image
+    Given user want to update template
+    When user change my image    ${CURDIR}/../../../File/test.jpg
+    Then show my image in current layout template
+
+Update a image not support to image
+    Given user want to update template
+    When user change my image    ${CURDIR}/TS0001_HeaderSettings.txt
+    Then user cannot upload image and show error message file not supported
+
+Lock and Unlock image
+    Given user want to update template
+    When user lock the image
+    Then show image is locked
+    When user unlock the image
+    Then show image is unlocked
+
+Delete image
+    Given user want to update template
+    When user delete my image
+	Then user don't have image in header banner

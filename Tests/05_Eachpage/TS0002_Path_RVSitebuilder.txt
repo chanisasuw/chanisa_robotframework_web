@@ -1,0 +1,61 @@
+*** Settings ***
+Documentation     Access to RVSitebuilder page
+Suite Setup       Run All Pages Suite Setup
+Suite Teardown    Run All Pages Suite Teardown
+Default Tags      User    AllPages
+Resource          ../AllPagesSuite.txt
+
+*** Test Cases ***
+TC01: User go to step 1
+	Given a user go to RVSitebuilder    link=STEP1
+	and current path is correct    \/sitebuilder\/rvscategory\/
+
+TC02: User go to step 2
+	Given a user go to RVSitebuilder    link=STEP2
+	and current path is correct    \/sitebuilder\/adjustStyle\/
+
+TC03: User go to step 3
+	Given a user go to RVSitebuilder    link=STEP3
+	and current path is correct    \/sitebuilder\/PageContent\/
+
+TC04: PageContent go to step Home
+	Given a user go to RVSitebuilder    link=HOME
+	and current path is correct    \/sitebuilder\/
+
+Down
+	Delete project
+	Mouse Over    button_d3d2e617335f08df83599665eef8a418
+    Click Button    button_d3d2e617335f08df83599665eef8a418
+
+TC05: User click step 1 if user don't have a project
+	Given a user go to RVSitebuilder    link=STEP1
+	and user cannot visit other pages if user don't have project
+
+TC06: User click step 2 if user don't have a project
+	Given a user go to RVSitebuilder    link=STEP2
+	and user cannot visit other pages if user don't have project
+
+TC07: User click Step 3 if user don't have a project
+	Given a user go to RVSitebuilder    link=STEP3
+	and user cannot visit other pages if user don't have project
+
+TC08: User cannot visit to step 1 if user don't have a project
+	Go To    ${WEBROOT}/sitebuilder/rvscategory/
+	${homepath}    Get Location
+	Should Match Regexp    ${homepath}    \/sitebuilder\/sitebuilder\/
+    Page Should Contain Element    DialogCreateProject
+
+TC09: User cannot visit to step 2 if user don't have a project
+	Go To    ${WEBROOT}/sitebuilder/adjustStyle/
+	${homepath}    Get Location
+	Should Match Regexp    ${homepath}    \/sitebuilder\/sitebuilder\/
+    Page Should Contain Element    DialogCreateProject
+
+
+TC10: User cannot visit to step 3 if user don't have a project
+	Go To    ${WEBROOT}/sitebuilder/PageContent/
+	${homepath}    Get Location
+	Should Match Regexp    ${homepath}    \/sitebuilder\/sitebuilder\/
+    Page Should Contain Element    DialogCreateProject
+    Mouse Over    button_d3d2e617335f08df83599665eef8a418
+    Click Button    button_d3d2e617335f08df83599665eef8a418

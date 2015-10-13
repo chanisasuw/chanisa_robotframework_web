@@ -1,0 +1,31 @@
+*** Settings ***
+Documentation     Back to cPanel
+Suite Setup       Run All Pages Suite Setup
+Suite Teardown    Run All Pages Suite Teardown
+Default Tags      User    AllPages
+Resource          ../AllPagesSuite.txt
+
+*** Test Cases ***
+TC01: Back to Control Panel from Home page
+	Given a user want to back to control panel    link=HOME
+	when user back to control panel
+	then show control panel in current page
+
+TC02: Back to Control Panel from Step1 page
+	Go To Default Page
+	Given a user want to back to control panel    link=STEP1
+	when user back to control panel
+	then show control panel in current page
+
+TC03: Back to Control Panel from Step2 page
+	Go To Default Page
+	Given a user want to back to control panel    link=STEP2
+	when user back to control panel
+	then show control panel in current page
+
+TC04: Back to Control Panel from Step3 page
+	Go To Default Page
+	Given a user want to back to control panel    link=STEP3
+	when user back to control panel
+	then show control panel in current page
+	Delete project

@@ -1,0 +1,32 @@
+*** Settings ***
+Documentation     Switch Language
+Suite Setup       Run All Pages Suite Setup
+Suite Teardown    Run All Pages Suite Teardown
+Default Tags      User    AllPages
+Resource          ../AllPagesSuite.txt
+
+
+*** Test Cases ***
+TC01: User switch to German Language at Step Home
+    Given a user go to RVSitebuilder    link=HOME
+    When user switch language to    ${German}
+    Then Language has been changed    Vorschau
+
+TC02: User switch to French Language at Step1
+    Given a user go to RVSitebuilder    link=SCHRITT 1
+    When user switch language to    ${French}
+    Then Language has been changed    Aperçu
+
+TC03: User switch to Ducth Language at Step2
+    Given a user go to RVSitebuilder    link=ÉTAPE 2
+    When user switch language to    ${Duch}
+    Then Language has been changed    Voorbeeld
+
+TC04: User switch to Italian Language at Step3
+    Given a user go to RVSitebuilder    link=STAP3
+    When user switch language to    ${Italian}
+    Then Language has been changed    Anteprima
+    When user switch language to    ${English}
+    Then Language has been changed    STEP1
+    Go To Default Page
+    Delete project

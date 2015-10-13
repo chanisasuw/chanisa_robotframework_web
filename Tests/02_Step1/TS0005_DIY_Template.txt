@@ -1,0 +1,41 @@
+*** Settings ***
+Documentation     CURD DIY Template
+Suite Setup       Run User Page Suite Setup
+Suite Teardown    Run User Page Suite Teardown
+Default Tags      User    UserStep1
+Resource          ../Step1PageSuite.txt
+
+*** Test Cases ***
+Create DIY Template
+	Given user want create diy template    button_93cba07454f06a4a960172bbd6e2a435
+	when user create DIY Tempalte
+	then a user can design unique template
+
+Create DIY Template if cancel process
+	Given user want create diy template    button_bafd7322c6e97d25b6299b5d6fe8920b
+	when user create DIY Tempalte
+	then a user doesn't create a new diy template
+
+Change template from DIY to reponsive template
+	Given user want to search template
+	When search template by    Books
+	Then select template and submit
+
+Clear all project
+	Go To Default Page
+	Delete project
+
+Change old DIY template to responsive template
+	Given user want to restore old DIY template
+	When change template from old template to Responsive template
+	Then message alert doesn't allow switch old template to Responsive Template
+
+Change old DIY template to DIY template
+	Given old template go to Create DIY template
+	When go to create DIY template
+	Then old template cannot create a new template
+
+Change old DIY template to Import template
+	Given old template go to Import template
+	When go to import template menu
+	Then old template cannot create a new template

@@ -1,0 +1,71 @@
+*** Settings ***
+Documentation     Manage Page
+Suite Setup       Run Step 3 Page Suite Setup
+Suite Teardown    Run Step 3 Page Suite Teardown
+Default Tags      User    UserStep3
+Resource          ../Step3PageSuite.txt
+
+
+*** Test Cases ***
+TC01: Add normal page
+	Given user want go to main menu    STEP3
+	When user add normal page
+	Then after add normal page
+
+TC02: Invalid create normal page by page name has null value
+	Given user want go to main menu    STEP3
+	When add normal page by page name has null value
+	Then display alert page name has null value
+
+TC03: Invalid duplicate page name
+	Given user want go to main menu    STEP3
+	When user add normal page
+	And add duplicate page name
+	Then add duplicate page name
+
+TC04: Edit Normal Page
+	Given user want go to main menu    STEP3
+	When select home page to edit
+	And open edit page in new tap
+	Then go back to main page
+
+TC05: Last Modified Date
+	Given user want go to main menu    STEP3
+	When select home page to edit
+	And go to rvwys for edit page
+	Then display last modified date at step3
+
+TC06: Rename page if name is duplicated
+	Given user want go to main menu    STEP3
+	And user want to rename page    Home
+	Then user cannot rename page
+
+TC07: Rename page
+	Given user want go to main menu    STEP3
+	And user want to rename page    Rename
+	Then normal page rename to new name    Rename
+
+TC08: Set Link and Target
+	Given user want go to main menu    STEP3
+	And select page option    Link and Target
+	Then user update link and target
+
+TC09: Clone Page
+	Given user want go to main menu    STEP3
+	And select page option    Clone Page
+	Then cloning to new page
+
+TC10: Delete Page
+	Given user want go to main menu    STEP3
+	When user delete page
+	Then confirm delete page
+
+TC11: Add external url page
+	Given user want go to main menu    STEP3
+	When user external url page
+	Then successfully added
+
+TC12: Manage Page
+	Given user want go to main menu    STEP3
+	When user manage navigation page
+	Then redirect to manage navigation page

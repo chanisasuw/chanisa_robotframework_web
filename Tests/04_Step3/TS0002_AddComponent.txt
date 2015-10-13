@@ -1,0 +1,78 @@
+*** Settings ***
+Documentation     Manage Component
+Suite Setup       Run Step 3 Page Suite Setup
+Suite Teardown    Run Step 3 Page Suite Teardown
+Default Tags      User    UserStep3
+Resource          ../Step3PageSuite.txt
+
+
+*** Test Cases ***
+TC01: Add Online Form
+    Given user want to add component
+    when user add component    ${OnlineForm}
+    Then user successfully added    Online Form
+
+TC02: Add Guest book
+    Given user want to add component
+    when user add component    ${GuestBook}
+    Then user successfully added    Guest book
+
+TC03: Add Newsletter
+    Given user want to add component
+    when user add component    ${Newsletter}
+    Then user successfully added    Newsletter
+
+TC04: Add Blog
+    Given user want to add component
+    when user add component    ${Blog}
+    Then user successfully added    Blog
+
+TC05: Add FAQ
+    Given user want to add component
+    when user add component    ${FAQ}
+    Then user successfully added    FAQ
+
+TC06: Add Photo Gallery
+    Given user want to add component
+    when user add component    ${PhotoGallery}
+    Then user successfully added    Photo Gallery
+
+TC07: Add Component fail if page name is be blank
+    Given user want to add component
+    when add component    ${PhotoGallery}
+    Then user cannot add component without page name
+
+TC08: Add newsletter fail if project have already newsletter
+    Given user want to add component
+    when user add component    ${Newsletter}
+    Then user unsuccessfully added    Newsletter database component already exists.
+
+TC09: Add newsletter fail if project have already blog
+    Given user want to add component
+    when user add component    ${Blog}
+    Then user unsuccessfully added    Blog database component already exists.
+
+TC10: Add newsletter fail if project have already FAQ
+    Given user want to add component
+    when user add component    ${FAQ}
+    Then user unsuccessfully added    Faq database component already exists.
+
+TC11: Published all component
+    Given user want to publish website
+    And Update database
+    And Update system to login
+    when user publish a project
+    Then user can view newsletter in the website
+    Then user can view online form in the website
+    Then user can view guest book in the website    
+    Then user can view blog in the website    Blog
+    Then user can view faq in the website    FAQ
+    Then user can view photo gallery in the website    Photo Gallery
+
+*** Variables ***
+${OnlineForm}    xpath=.//*[@id='addComponentPage']/div/a[1]
+${GuestBook}    xpath=.//*[@id='addComponentPage']/div/a[2]
+${Newsletter}    xpath=.//*[@id='addComponentPage']/div/a[3]
+${Blog}    xpath=.//*[@id='addComponentPage']/div/a[4]
+${FAQ}    xpath=.//*[@id='addComponentPage']/div/a[5]
+${PhotoGallery}    xpath=.//*[@id='addComponentPage']/div/a[6]

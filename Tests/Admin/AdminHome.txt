@@ -1,0 +1,17 @@
+*** Settings ***
+Documentation     Admin Home test suite
+Suite Setup       Run Admin Page Suite Setup
+Suite Teardown    Run Admin Page Suite Teardown
+Default Tags      Admin    AdminHome
+Resource          ../AdminPageSuite.txt
+
+*** Test Cases ***
+Test View Admin Home Page
+    [Setup]    Go To Default Page
+    Log    Run Test Case "Test View Admin Home Page"
+    Capture Page Screenshot    admin_home.jpg
+
+*** Keyword ***
+Go To Default Page
+    Go To    ${WEBROOT}?/sitebuilder/admin
+    Sleep    ${DELAY}

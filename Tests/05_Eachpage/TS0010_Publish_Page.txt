@@ -1,0 +1,49 @@
+*** Settings ***
+Documentation     Publish Page
+Suite Setup       Run All Pages Suite Setup
+Suite Teardown    Run All Pages Suite Teardown
+Default Tags      User    AllPages
+Resource          ../AllPagesSuite.txt
+
+
+*** Test Cases ***
+TC01: User publish current project at Step Home
+    Given a user go to RVSitebuilder    link=HOME
+    when user publish current project
+    then show publish dialog box
+
+TC02: User publish current project at Step1
+    Given a user go to RVSitebuilder    link=STEP1
+    when user publish current project
+    then show publish dialog box
+
+TC03: User publish current project at Step2
+    Given a user go to RVSitebuilder    link=STEP2
+    when user publish current project
+    then show publish form
+
+TC04: User publish current project at Step3
+    Given a user go to RVSitebuilder    link=STEP3
+    when user publish current project
+    then show publish dialog box
+
+TC05: User publish current project at Step3
+    Given a user go to RVSitebuilder    link=STEP3
+    when user publish current project
+    then show website published
+
+TC06: User publish current project if domain name is reserved words
+    Given a user go to RVSitebuilder    link=HOME
+    when user publish current project
+    then show error message if domain name is reserved words 1
+
+TC07: User publish current project if domain name is reserved words
+    Given a user go to RVSitebuilder    link=HOME
+    when user publish current project
+    then show error message if domain name is reserved words 2
+    Delete project
+
+TC08: User publish current project if don't have project
+    Given a user go to RVSitebuilder    link=HOME
+    when user publish current project
+    then not show publish dialog box

@@ -1,0 +1,30 @@
+*** Settings ***
+Documentation     CRUD Project Tryout
+Suite Setup       Run Home Page Suite Setup
+Suite Teardown    Run Home Page Suite Teardown
+Default Tags      User    UserHome
+Resource          ../HomePageSuite.txt
+
+*** Test Cases ***
+# TC01: Create a project tryout and create database automatically
+# 	Close dialog auto create project
+#     Given a user want to create a new project tryout
+#     when user create a project tryout
+#     and user create database automatically
+#     then project tryout has three pages
+
+# TC02: Create a project Tryout and user cannot custom DB
+#     Go To Default Page
+    # Given a user want to create a new project tryout
+    # when user create a project tryout
+    # and user custom database configuration
+    # then cannot create project tryout
+
+# TC03: Edit Project tryout
+#     Given user want to edit project tryout
+#     when edit project tryout
+#     then project tryout has three pages
+#     Go To Default Page
+
+# TC04: Delete a tryout project
+#     Delete project

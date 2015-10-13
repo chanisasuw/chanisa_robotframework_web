@@ -1,0 +1,34 @@
+*** Settings ***
+Documentation     Preview Page
+Suite Setup       Run All Pages Suite Setup
+Suite Teardown    Run All Pages Suite Teardown
+Default Tags      User    AllPages
+Resource          ../AllPagesSuite.txt
+
+
+*** Test Cases ***
+TC01: User preview current project at Step Home
+    Given a user go to RVSitebuilder    link=HOME
+    when user preview current project
+	then show preview all page
+    and back to Step Home
+
+TC02: User preview current project at Step 1
+    Given a user go to RVSitebuilder    link=STEP1
+    when user preview current project
+	then show preview all page
+    and back to Step 1
+
+TC03: User preview current project at Step 2
+    Given a user go to RVSitebuilder    link=STEP2
+    when user preview current project
+	then show preview all page
+    and back to Step 2
+
+TC04: User preview current project at Step 3
+    Given a user go to RVSitebuilder    link=STEP3
+    when user preview current project
+	then show preview all page
+    and back to Step 3
+    Go To Default Page
+    Delete project

@@ -1,0 +1,34 @@
+*** Settings ***
+Documentation     Manage Internal Page
+Suite Setup       Run Step 3 Page Suite Setup
+Suite Teardown    Run Step 3 Page Suite Teardown
+Default Tags      User    UserStep3
+Resource          ../Step3PageSuite.txt
+
+
+*** Test Cases ***
+TC01: Add Internal Page by Use Template
+	Given user want go to main menu    STEP3
+	When create Internal Page by Use Template
+	Then can create internal page by Use Template
+
+TC02: Move to internal page
+	Given user want go to main menu    STEP3
+	When user add normal page
+	And select option move to internal page    Move to Internal Page
+	Then move page to internal page
+
+TC03: Move to Navigation page
+	Given user want go to main menu    STEP3
+	And select option move to navigation page    Move to Navigation
+	Then move page to navigation page
+
+TC04: Edit Link and Target
+	Given user want go to main menu    STEP3
+	When edit link and target    Display Option
+	Then user editable link and target
+
+# TC05: Add Internal Page by Blank Page
+# 	Given user want go to main menu    STEP3
+# 	When create Internal Page by Blank Page
+# 	Then can create internal page by Blank Page

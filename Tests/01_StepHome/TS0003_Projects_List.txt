@@ -1,0 +1,30 @@
+*** Settings ***
+Documentation     Projects List
+Suite Setup       Run Home Page Suite Setup
+Suite Teardown    Run Home Page Suite Teardown
+Default Tags      User    UserHome
+Resource          ../HomePageSuite.txt
+
+*** Test Cases ***
+TC01: User View my project
+	Create a project first
+	Go To Default Page
+	Given user want to view my current project
+	when open rvsitebuilder
+	then show current project at first project
+
+TC02: User Search a project
+	Given user want to find a project
+	when serach project name    QA Test
+	then show current project at first project
+
+TC03: User Search a project if name is invalid
+	Given user want to find a project
+	when serach project name    กกกก
+	then not show project name
+
+TC04: user cannot view my project
+	Delete project
+	Given user want to view my current project
+	when open rvsitebuilder
+	then doesn't show project because all project has been deleted

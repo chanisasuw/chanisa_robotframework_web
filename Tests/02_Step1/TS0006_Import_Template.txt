@@ -1,0 +1,33 @@
+*** Settings ***
+Documentation     Import All Template
+Suite Setup       Run User Page Suite Setup
+Suite Teardown    Run User Page Suite Teardown
+Default Tags      User    UserStep1
+Resource          ../Step1PageSuite.txt
+
+*** Test Cases ***
+#Import Template by valid value
+Import Responsive Template
+	Given import Responsive Template    ${CURDIR}/../../File/blue_tower_2.tar.gz
+	When user import template valid file type
+	Then Message Alert Successfully
+
+Import ResponTemplate2
+	Given user want to import template    ${CURDIR}/../../File/purple_woman_2.tar.gz
+	When user import template valid file type
+	Then Message Alert Successfully
+
+Import Template by invalid value file type
+	Given user want to import template    ${CURDIR}/../../File/InvalidFileType.pdf
+	When user import template invalid file type
+	Then close error page invalid file type
+
+Import Template invalid folder name
+	Given user want to import template    ${CURDIR}/../../File/InvalidStructure.tar.gz
+	When user import template invalid folder name
+	Then close error page invalid folder name
+
+Import Template invalid data structure
+	Given user want to import template    ${CURDIR}/../../File/lightblue_fashion_2.tar.gz
+	When user import template invalid data structure
+	Then close error page invalid data structure

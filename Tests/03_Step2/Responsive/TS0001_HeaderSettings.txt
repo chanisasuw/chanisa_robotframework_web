@@ -1,0 +1,91 @@
+*** Settings ***
+Documentation     Responsive Template Test Step 2 suite
+Suite Setup       Run Step 2 Reponsive Suite Setup
+Suite Teardown    Run Step 2 Page Suite Teardown
+Default Tags      User    UserStep2   HeaderBanner
+Resource          ../../Step2PageSuite.txt
+
+*** Variables ***
+${AboveBanner}    //*[@id="ui-accordion-accordionNew-panel-0"]/div[1]/div[2]/div[1]/a
+${Topmost}    //*[@id="ui-accordion-accordionNew-panel-0"]/div[1]/div[2]/div[2]/a
+${UnderneathBanner}    //*[@id="ui-accordion-accordionNew-panel-0"]/div[1]/div[2]/div[3]/a
+
+*** Test Cases ***
+# Navigation Position ##
+Set navigation position to Above Banner
+    Given user want to update template
+    When user setting navigation postion    ${AboveBanner}
+    Then show navigation position Above Banner correctly
+
+Set navigation position to Topmost
+    Given user want to update template
+    When user setting navigation postion    ${Topmost}
+    Then show navigation position Topmost correctly
+
+Set navigation position to Underneath Banner
+    Given user want to update template
+    When user setting navigation postion    ${UnderneathBanner}
+    Then show navigation position Underneath Banner correctly
+
+Set Space Color
+    Given user want to update template
+    When user select a new space color
+    Then show new space color in template
+
+## Comany Name ##
+Add Valid Company Name to template
+	Given user want to update template
+    When user add company name
+    Then show text in template
+
+Edit Valid Company Name to template
+    Given user want to update template
+    When user edit company name
+    Then show company name in template
+
+Delete Company Name
+    Given user want to update template
+    When user delete company name
+    Then not show company name in template
+
+Add Empty Company Name to template
+    Given user want to update template
+    When user add company name
+    Then not show text in template
+
+## Slogan ##
+Add Valid Slogan to template
+	Given user want to update template
+    When user add slogan name
+    Then show text in template
+
+Edit Valid Slogan to template
+    Given user want to update template
+    When user edit slogan name
+    Then show slogan name in template
+
+Delete Slogan
+    Given user want to update template
+    When user delete slogan
+    Then not show slogan in template
+
+Add Empty Slogan to template
+    Given user want to update template
+    When user add slogan name
+    Then not show text in template
+  
+## Text ##
+Add Valid Text to template
+	Given user want to update template
+    When user add text name
+    Then show text in template
+
+Add Empty Text to template
+	Given user want to update template
+    When user add text name
+    Then not show text in template
+
+Edit Valid Text to template
+    Given user want to update template
+    When user add text name
+    Then show text in template

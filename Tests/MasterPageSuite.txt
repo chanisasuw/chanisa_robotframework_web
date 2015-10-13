@@ -1,0 +1,199 @@
+*** Settings ***
+Resource        ../Resources/Common.txt
+Resource        ../Resources/Setup.txt
+
+*** Keywords ***
+###  setting suite  ####
+Run Master Page Suite Setup
+    Import Resource    ${CURDIR}/../Resources/Common_kw.txt
+    Log    Run HomePage suite setup on ${CPMODE}
+    Load Resources by CP Mode
+    Do Login To Control Panel With User
+    Go to    ${WEBROOT}
+	Create a project first
+
+Run Master Page Suite Teardown
+	Delete project
+    Do Logout cPanel
+    Go to    ${LOGOUT}
+    Do Close Browser
+
+Run Master Page Suite Setup
+    Import Resource    ${CURDIR}/../Resources/Common_kw.txt
+    Log    Run HomePage suite setup on ${CPMODE}
+    Load Resources by CP Mode
+    Do Login To Control Panel With User
+    Go to    ${WEBROOT}
+	Create a project first
+	
+###  setting suite  ####
+Go To Step3 Page
+    Go to    ${WEBROOT}/sitebuilder/PageContent/
+
+Given a user want to create a new master page
+	Click Button    id=createNewMasterpage
+
+when user create master page
+	[Arguments]    ${masterpagename}    ${masterpagelayout}
+	Input Text    MasterPageName    ${masterpagename}
+	Select Radio Button    masterPageType    ${masterpagelayout}
+	Mouse Over    button_c9cc8cce247e49bae79f15173ce97354
+	Click Button    button_c9cc8cce247e49bae79f15173ce97354
+
+then user have new master page
+	[Arguments]    ${titlemasterpage}    ${gridcolumn}
+	Sleep    3
+	Select Window    title=${titlemasterpage}
+	Page Should Contain    ${gridcolumn}
+	Close Window
+	Select Window    title=Rvglobalsoft :: STEP3
+	Click Element    xpath=//*[@id="masterpage"]/div/div[1]/div[5]/a/img
+	Page Should Contain    ${titlemasterpage}
+	Mouse Over    button_ea4788705e6873b424c65e91c2846b19
+	Click Button    button_ea4788705e6873b424c65e91c2846b19
+
+Given a user want to view all master page
+	Click Element    xpath=//*[@id="masterpage"]/div/div[1]/div[5]/a/img
+
+when user view all master page of current project
+	Page Should Contain Element    id=ListMasterPageView
+
+then show all master page of this project
+	Page Should Contain    six
+	Page Should Contain Link    xpath=//div[@class="listmaster-edit"]/a[1]    Edit
+	Page Should Contain Link    xpath=//a[@class="delMasterPageLayout"]    Delete
+	Mouse Over    button_ea4788705e6873b424c65e91c2846b19
+	Click Button    button_ea4788705e6873b424c65e91c2846b19
+
+Given a user want to view master page in form add page
+	Click Button    id=addPageAndCompoContent
+
+when user view all master page in form add page
+	Select Checkbox    usedMasterLayout
+
+then show all master page for use master page
+	Page Should Contain    six
+	Page Should Contain    (16)
+	Mouse Over    button_ea4788705e6873b424c65e91c2846b19
+	Click Button    button_ea4788705e6873b424c65e91c2846b19
+
+when user edit master page
+	Click Link    Edit
+
+then show edit layout page
+	[Arguments]    ${namemaster}
+	Select Window    ${namemaster}
+	Page Should Contain    16 Grid Column
+	${layoutpath}    Get Location
+    Should Match Regexp    ${layoutpath}    \/sitebuilder/rvwysiwyg/action/editViewMasterPage/rvsLayoutTemplateUserId\/
+	Close Window
+	Select Window    title=Rvglobalsoft :: STEP3
+
+Given user want to delete master template
+	Click Element    xpath=//*[@id="masterpage"]/div/div[1]/div[5]/a/img
+
+when delete master page
+	Page Should Contain Element    id=ListMasterPageView
+	Click Link    Delete
+
+then not show master page was deleted
+	Page Should Contain    Are you sure to Delete this master page layout?
+	Mouse Over    button_f2a6c498fb90ee345d997f888fce3b18
+	Click Button    button_f2a6c498fb90ee345d997f888fce3b18
+	Reload Page
+	Sleep    3
+	Click Element    xpath=//*[@id="masterpage"]/div/div[1]/div[5]/a/img
+	[Arguments]    ${namemaster}
+	Page Should Not Contain    ${namemaster}
+	Mouse Over    button_ea4788705e6873b424c65e91c2846b19
+	Click Button    button_ea4788705e6873b424c65e91c2846b19
+
+when add page and select master page
+	Select Checkbox    usedMasterLayout
+
+then this project don't have master page
+	[Arguments]    ${namemaster}
+	Page Should Not Contain    ${namemaster}
+	Mouse Over    button_ea4788705e6873b424c65e91c2846b19
+	Click Button    button_ea4788705e6873b424c65e91c2846b19
+
+then show a new page and master page
+	[Arguments]    ${masterlink}
+	Page Should Contain    ${masterlink}
+
+then user cannot delete master page
+	Mouse Over    button_ea4788705e6873b424c65e91c2846b19
+	Click Button    button_ea4788705e6873b424c65e91c2846b19
+
+Given user want to edit master page
+	[Arguments]    ${linkmaster}
+	Click Link    ${linkmaster}
+
+when edit master page
+	Sleep    2
+
+when add page with master page
+	Input Text    AddPageName    testimonial
+	Select Checkbox    usedMasterLayout
+	Click Element    xpath=//*[@id="listMasterPageLayoutUser"]/div[3]/label[1]/label/img
+	Mouse Over    button_e0aa021e21dddbd6d8cecec71e9cf564
+	Click Button    button_e0aa021e21dddbd6d8cecec71e9cf564
+
+when add page without master page
+	Input Text    AddPageName    contact us
+	Select Checkbox    usedMasterLayout
+	Mouse Over    button_e0aa021e21dddbd6d8cecec71e9cf564
+	Click Button    button_e0aa021e21dddbd6d8cecec71e9cf564
+
+when add page (external url) with master page
+	Input Text    AddPageName    testimonial
+	Click Element    id=rvselectbox
+	Click Element    xpath=//*[@id="addMainPage"]/table/tbody/tr[2]/td/div[2]/dl/dd/ul/li[3]/a
+
+then user cannot use master page
+	Page Should Contain Element    xpath=//input[@id="usedMasterLayout"][@disabled="disabled"]
+	Mouse Over    button_ea4788705e6873b424c65e91c2846b19
+	Click Button    button_ea4788705e6873b424c65e91c2846b19
+
+when add internal page without master page
+	Select Radio Button    status    3
+	Input Text    pageNameIN    testimonial
+	Select Checkbox    usedMasterLayout
+	Mouse Over    button_e0aa021e21dddbd6d8cecec71e9cf564
+	Click Button    button_e0aa021e21dddbd6d8cecec71e9cf564
+
+when user add internal page
+	Select Radio Button    status    3
+	Input Text    pageNameIN    contact us
+	Select Checkbox    usedMasterLayout
+	Click Element    xpath=//*[@id="listMasterPageLayoutUser"]/div[3]/label[1]/label/img
+	Mouse Over    button_e0aa021e21dddbd6d8cecec71e9cf564
+	Click Button    button_e0aa021e21dddbd6d8cecec71e9cf564
+
+when add internal page (blank page) with master page
+	Select Radio Button    status    3
+	Click Element    css=dl.pageInternal > dt > #rvselectbox > span
+	Click Element    xpath=//*[@id="addInternalPage"]/div/table/tbody/tr[2]/td/div[2]/dl/dd/ul/li[3]/a/span
+
+Given user want to view internal page list
+	[Arguments]    ${linkmaster}
+	Click Element    id=showinternalPage
+	Click Link    ${linkmaster}
+
+## Component ##
+when add component without master page
+    [Arguments]    ${component_id}
+    Click Button    id=addPageAndCompoContent
+    Click Element    addCompoContent
+    Click Element    ${component_id}
+
+## No Create Master Page ##
+Given user want to manage normal project
+	
+
+Given user want to manage old responsive project
+
+
+When user open step 3
+	Go To Step3 Page
+

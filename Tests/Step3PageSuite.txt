@@ -1,0 +1,521 @@
+*** Settings ***
+Resource        ../Resources/Common.txt
+Resource        ../Resources/Setup.txt
+
+*** Variables ***
+${dbname_test}    slave_test
+${dbuser_test}    slave_test
+${dbpassword_test}    bangkok5487
+${url}    http://slave.cpdev1.rvglobalsoft.net
+
+*** Keywords ***
+
+
+###  setting suite  ####
+Run Step 3 Page Suite Setup
+    Import Resource    ${CURDIR}/../Resources/Common_kw.txt
+    Log    Run UserPage suite setup on ${CPMODE}
+    Load Resources by CP Mode
+    Do Login To Control Panel With User
+    Go to    ${WEBROOT}
+    Create a project first
+
+Run Step 3 Page Suite Teardown
+    Delete project
+    Logout cPanel
+    Log    Run UserPage suite teardown
+    Do Close Browser
+
+Go To Default Page
+    Go to    ${WEBROOT}
+
+Given user want go to main menu
+	[Arguments]    ${menuname}
+    Click Link    ${menuname}
+
+And delete normal page
+    Sleep    ${DELAY}
+    Click Element    css=.spicon.iconDeleteWYS
+    Wait Until Page Contains Element    button_a60852f204ed8028c1c58808b746d115
+    Click Element    button_a60852f204ed8028c1c58808b746d115
+    Wait Until Page Contains    Please wait
+
+###  Create Page  ####
+When user add normal page
+	Click Button    addPageAndCompoContent
+	Input Text    AddPageName    NormalPage
+    Mouse Over    button_e0aa021e21dddbd6d8cecec71e9cf564
+	Click Button    button_e0aa021e21dddbd6d8cecec71e9cf564
+
+Then after add normal page
+	Wait Until Page Contains    NormalPage
+
+When user external url page
+    Click Button    addPageAndCompoContent
+    Click Element    id=rvselectbox
+    Click Element    xpath=//*[@id="addMainPage"]/table/tbody/tr[2]/td/div[2]/dl/dd/ul/li[3]/a
+    Input Text    AddPageName    ExternalPage
+    Input Text    external_url    http://rvsitebuilder.com
+    Mouse Over    button_e0aa021e21dddbd6d8cecec71e9cf564
+    Click Button    button_e0aa021e21dddbd6d8cecec71e9cf564
+
+Then successfully added
+    Wait Until Page Contains    ExternalPage
+
+When user manage navigation page
+    Click Element    xpath=.//*[@id='sidebar']/div[2]/div[1]/a
+
+Then redirect to manage navigation page
+    ${managepage}    Get Location
+    Should Match Regexp    ${managepage}    \/sitebuilder/PageContent\/
+
+Then user update link and target
+    Select Radio Button    frmEditPage[target]    _blank
+    Mouse Over    id=button_e0aa021e21dddbd6d8cecec71e9cf564
+    Click Element    id=button_e0aa021e21dddbd6d8cecec71e9cf564
+    Sleep    2
+
+#Invalid case
+When add normal page by page name has null value
+    Click Button    addPageAndCompoContent
+    Click Button    button_e0aa021e21dddbd6d8cecec71e9cf564
+
+Then display alert page name has null value
+    Wait Until Page Contains    The process cannot go further if the required field is empty. Please fill it.
+    Click Button    button_ea4788705e6873b424c65e91c2846b19
+
+And add duplicate page name
+    Click Button    addPageAndCompoContent
+    Input Text    AddPageName    NormalPage
+    Click Button    button_e0aa021e21dddbd6d8cecec71e9cf564
+
+Then add duplicate page name
+    Wait Until Page Contains    Page name already exists.
+    Click Button    button_ea4788705e6873b424c65e91c2846b19
+#End invalid case
+
+
+
+## Internal Page ##
+When create Internal Page by Use Template
+    Click Button    addPageAndCompoContent
+    Select Radio Button    status    3
+    Input Text    pageNameIN    InternalUsetemplate
+    Click Button    button_e0aa021e21dddbd6d8cecec71e9cf564
+
+Then can create internal page by Use Template
+    Wait Until Page Contains    InternalUsetemplate
+
+When create Internal Page by Blank Page
+    Reload Page
+    Click Button    addPageAndCompoContent
+    Select Radio Button    status    3
+    Input Text    pageNameIN    InternalBlankPage
+    Click Element    id=addInternalPage
+    Click Element    xpath=//*[@id="rvselectbox"]/span
+    Click Element    xpath=//*[@id="addInternalPage"]/div/table/tbody/tr[2]/td/div[2]/dl/dd/ul/li[3]/a
+    Click Button    button_e0aa021e21dddbd6d8cecec71e9cf564
+
+Then can create internal page by Blank Page
+    Wait Until Page Contains    InternalBlankPage
+
+And user want to rename page
+    [Arguments]    ${pageName}
+    Click Element    //div[@pagename='NormalPage']
+    Input Text    //textarea[contains(.,'NormalPage')]    ${pageName}
+    Click Element    id=mainpage
+
+Then normal page rename to new name
+    [Arguments]    ${newName}
+    Wait Until Page Contains    ${newName}
+    Reload Page
+    Wait Until Page Contains    ${newName}
+
+Then user cannot rename page
+    Wait Until Page Contains    Page name already exists.
+    Mouse Over    id=button_d3d2e617335f08df83599665eef8a418
+    Click Element    id=button_d3d2e617335f08df83599665eef8a418
+
+And select page option to member page
+    [Arguments]    ${pageOption}
+    Sleep    8
+    Select From List By Label    xpath=.//*[@class='step3hover']/div[3]/form/select[@pagename='Home']   ${pageOption}
+
+Then page option is change to member page
+    Wait Until Page Contains Element    //div[@class='step3hover']/div[4]/span/img[@class='spicon iconMember']
+
+When select page option to Unset member page
+    [Arguments]    ${pageOption}
+    Reload Page
+    Sleep    ${DELAY}
+    Select From List By Label    xpath=.//*[@class='step3hover']/div[3]/form/select[@pagename='Home']     ${pageOption}
+
+Then page should not display icon
+    Page Should Not Contain Element    xpath=.//img[@alt='Unset Member Page']
+    Page Should Contain Element    //option[@value='memberPage']
+
+And select page option
+    [Arguments]    ${pageOption}
+    Reload Page
+    Sleep    ${DELAY}
+    Select From List By Label    xpath=.//*[@class='step3hover'][2]/div[3]/form/select[@pagename='Rename']    ${pageOption}
+
+Then cloning to new page
+    Page Should Contain    Copied Rename
+
+And select option move to internal page
+    [Arguments]    ${pageOption}
+    Reload Page
+    Select From List By Label    xpath=.//*[@class='step3hover'][2]/div[3]/form/select[@pagename='NormalPage']    ${pageOption}
+    Wait Until Page Contains    Are you sure you want to move to Internal Page?
+    Click Button    button_a60852f204ed8028c1c58808b746d115
+Then move page to internal page
+    Sleep    4
+    Wait Until Page Contains Element    //div[@class="internalpage step3hover"]/div[3]/select[@pagename='NormalPage']
+
+And select option move to navigation page
+    [Arguments]    ${pageOption}
+    Click Element    xpath=.//li[@id="showinternalPage"]/a
+    Select From List By Label    xpath=.//div[@class="internalpage step3hover"]/div[3]/select[@pagename='NormalPage']    ${pageOption}
+    Wait Until Page Contains    Are you sure you want to move to Navigation?
+    Click Button    button_a60852f204ed8028c1c58808b746d115
+
+Then move page to navigation page
+    Sleep    4
+    Wait Until Page Contains Element    //div[@class='step3hover'][2]/div[3]/form/select[@pagename='NormalPage']
+
+
+When edit link and target
+    [Arguments]    ${pageOption}
+    Click Element    xpath=.//li[@id="showinternalPage"]/a
+    Select From List By Label    xpath=.//div[@class="internalpage step3hover"]/div[3]/select[@pagename='InternalUsetemplate']    ${pageOption}
+    Select Radio Button    frmEditPage[pageType]    blankPage
+    Mouse Over    button_e0aa021e21dddbd6d8cecec71e9cf564
+    Click Element    button_e0aa021e21dddbd6d8cecec71e9cf564
+
+Then user editable link and target
+    Sleep    2
+    Click Element    xpath=.//li[@id="showinternalPage"]/a
+    Page Should Contain    InternalUsetemplate
+
+When user delete page
+    Click Element    //div[@class='step3hover'][2]/div[7]/span/a/img[@class='spicon iconDeleteWYS']  
+
+Then confirm delete page
+    Wait Until Page Contains    Are you sure you want to delete this page?
+    Click Button    button_a60852f204ed8028c1c58808b746d115
+    Wait Until Page Contains    Please wait
+    Sleep    ${DELAY}
+    Page Should Not Contain Element    //div[@pagename='PageForDelete']
+
+When select home page to edit
+    Mouse Over     css=img.spicon.iconEditWYS
+    Click Element    css=img.spicon.iconEditWYS
+
+And open edit page in new tap
+    Select Window    title=Rvglobalsoft ::
+    Wait Until Page Contains    Page Layout
+    Reload Page
+    Click Element    xpath=.//*[@id='ui-id-1']
+    Mouse Over    //div[@id='show1column']/div[1]
+    Click Element    //div[@id='show1column']/div[1]/div/a/span
+    Close Window
+Then go back to main page
+    Select Window    Rvglobalsoft :: STEP3
+
+And go to rvwys for edit page
+    Sleep    ${DELAY}
+    Select Window    Home
+    Wait Until Page Contains Element    id=wys-toolbar
+    Click Element    xpath=.//*[@id='wys-save_page']
+    Close Window
+
+Then display last modified date at step3
+    ${curDate}=    Get Current Date    result_format=%b %d %Y      #Apr 01 2015
+    Select Window    Rvglobalsoft :: STEP3
+    Reload Page
+    Sleep    2
+    Wait Until Page Contains    ${curDate}
+
+When create Component Page
+    :FOR  ${var}  IN  Online Form  Guest book  Newsletter  Blog  FAQ  Photo Gallery
+    \  Click Button    addPageAndCompoContent
+    \  Select Radio Button    status    2
+    \  Click Link    ${var}
+    \  Click Button    button_e0aa021e21dddbd6d8cecec71e9cf564
+    \  Sleep    ${DELAY}
+    \  Wait Until Page Contains    Please wait
+    \  Wait Until Page Contains    ${var}
+Then create all component page for complete
+    :FOR  ${var}  IN  Form  Guest Book  Blog  FAQ  Photo Gallery  Newsletter
+    \  Page Should Contain    ${var}
+
+When Add component failue
+    Reload Page
+    Click Button    addPageAndCompoContent
+    Select Radio Button    status    2
+    Click Button    button_e0aa021e21dddbd6d8cecec71e9cf564
+Then Add component failue
+    Wait Until Page Contains    Add component failue!
+    Click Button    button_ea4788705e6873b424c65e91c2846b19
+
+When select Photo Gallery page for edit
+    Click Element    //div[@class='step3hover'][6]/div[2]/div/span/a/img
+    Sleep    ${DELAY}
+Then go to photo gallery page
+    Wait Until Page Contains    Image Upload
+When select option to homepage
+    Reload Page
+    Sleep    2
+    [Arguments]    ${pageOption}
+    Select From List By Label    xpath=.//*[@class='step3hover'][2]/div[3]/form/select[@pagename='NormalPage']    ${pageOption}
+Then home icon move to the other page
+    Sleep    4
+    Wait Until Page Contains Element    //div[@class='step3hover'][2]/div/table/tbody/tr/td[1]/div[@class="isHome"]
+
+
+When select page for edit page title
+    Sleep    2
+    Click Element    xpath=.//*[@id='sidebar']/div[2]/div[2]/a
+    Wait Until Page Contains     Page Title
+    Input Text    xpath=//*[@id="new_page_title"]    New Page Title
+    Click Element    xpath=.//*[@id='tabs']/ul/li[1]/a
+
+Then page title rename to new name
+    Reload Page
+    Wait Until Page Contains Element    //input[@value="New Page Title"]
+
+When select page for edit page title over 255 characters
+    Click Element    xpath=.//*[@id='sidebar']/div[2]/div[2]/a
+    Wait Until Page Contains     Page Title
+    Input Text    xpath=//*[@id="new_page_title"]    ${255charecters}
+    Click Element    xpath=.//*[@id='tabs']/ul/li[1]/a
+
+Then user cannot save page title
+    Wait Until Page Contains    Please insert Page Title, which contained 1-255 characters
+
+When select page for rename page title
+    Click Element    xpath=.//*[@id='sidebar']/div[2]/div[2]/a
+    Wait Until Page Contains     Page Title
+    Click Element    //img[@alt="Reset"]
+    Wait Until Page Contains    Are you sure you want to reset default page title?
+    Mouse Over    button_526d688f37a86d3c3f27d0c5016eb71d
+    Click Button    button_526d688f37a86d3c3f27d0c5016eb71d
+
+Then page should reset to page name by default
+    Sleep    ${DELAY}
+    Reload Page
+    Wait Until Page Contains Element    //input[@value=""]
+
+When select page for setting meta tags
+    [Arguments]    ${metaKeyword}    ${metaDesc}
+    Click Element    xpath=.//*[@id='sidebar']/div[2]/div[2]/a
+    Click Element    xpath=.//*[@id='tabs']/ul/li[2]/a
+    Input Text    xpath=.//table[@class="manage"]/tbody/tr/td[3]/form/div[1]/textarea[@name="meta_keyword"]    ${metaKeyword}
+    Click Element    xpath=.//table[@class="manage"]/tbody/tr/td[5]/form/div[1]/textarea[@name="meta_description"]
+    Input Text    xpath=.//table[@class="manage"]/tbody/tr/td[5]/form/div[1]/textarea[@name="meta_description"]    ${metaDesc}
+    Click Element    xpath=.//table[@class="manage"]/tbody/tr/td[3]/form/div[1]/textarea[@name="meta_keyword"]
+    
+
+Then home page has meta keyword and description
+    Wait Until Page Contains Element    //input[@value="Home Page"]
+    Wait Until Page Contains Element    //input[@value="The first page"]
+
+Then user cannot save meta tags and meta description
+    Wait Until Page Contains    Please insert meta keyword, which contained 1-500 characters.
+    Wait Until Page Contains    Please insert meta description, which contained 1-500 characters.
+
+When user click reset meta keyword
+    Click Element    xpath=.//*[@id='sidebar']/div[2]/div[2]/a
+    Click Element    xpath=.//*[@id='tabs']/ul/li[2]/a
+    Click Element    //table[@class='manage']/tbody/tr/td[4]/div/form/a/img
+    Wait Until Page Contains    Please confirm
+    Mouse Over    button_93cba07454f06a4a960172bbd6e2a435
+    Click Button    button_93cba07454f06a4a960172bbd6e2a435
+    Click Element    //table[@class='manage']/tbody/tr/td[6]/div/form/a/img
+    Wait Until Page Contains    Please confirm
+    Mouse Over    button_93cba07454f06a4a960172bbd6e2a435
+    Click Button    button_93cba07454f06a4a960172bbd6e2a435
+
+Then home page has meta keyword and description be empty
+    Reload Page
+    Page Should Not Contain Element     //input[@value="Home Page"]
+    Page Should Not Contain Element     //input[@value="The first page"]
+
+When update action page effect
+    Click Element    xpath=.//*[@id='tabs']/ul/li[3]/a
+    Wait Until Page Contains    Page Effect will perform only with Internet Explorer (IE) browser.
+
+Then user successfully updated page effect
+    Click Element    //div[@class="listPage"]/div[2]/input[2]
+
+When update page file name
+    Click Element    xpath=.//*[@id='tabs']/ul/li[4]/a
+    Input Text    xpath=.//div[@class="listPage"]/table/tbody/tr/td[3]/div/input    FirstPage
+    Click Element    id=submitted
+
+Then user successfully updated page file name
+    Wait Until Page Contains    File name successfully updated.
+    Wait Until Page Contains Element    //input[@value="FirstPage"]
+
+## Rearrage Page ##
+When Move up
+    Sleep    5
+    Click Element    rearrange
+    Wait Until Page Contains    Rearrange pages
+    Click Element    //*[@id="MultipleSelectBox_DropDown"]/li[2]/span[1]
+    Click Element    id=moveUp
+    Page Should Contain Element    //div[@id='dataPageRearrange']/div/div[@class='treeview']/ul[@id='MultipleSelectBox_DropDown']/li[2]/span[1]    Home
+    Mouse Over    button_e0aa021e21dddbd6d8cecec71e9cf564
+    Click Button    button_e0aa021e21dddbd6d8cecec71e9cf564
+
+Then show normal page is the first page
+    Wait Until Page Contains ELement    //div[@class='step3hover']/div[1]/table/tbody/tr/td[2]/div/div[@pagename='NormalPage']
+
+
+When move down normal page
+    Click Element    rearrange
+    Wait Until Page Contains    Rearrange pages
+    Click Element    //*[@id="MultipleSelectBox_DropDown"]/li[1]/span[1]
+    Click Element    id=moveDown
+    Page Should Contain Element    //div[@id='dataPageRearrange']/div/div[@class='treeview']/ul[@id='MultipleSelectBox_DropDown']/li[2]/span[1]    NormalPage
+    Mouse Over    button_e0aa021e21dddbd6d8cecec71e9cf564
+    Click Button    button_e0aa021e21dddbd6d8cecec71e9cf564
+
+Then show home page is the first page
+    Wait Until Page Contains ELement    //div[@class='step3hover']/div[1]/table/tbody/tr/td[2]/div/div[@pagename='Home']
+
+When move normal page to sub level
+    Click Element    rearrange
+    Wait Until Page Contains    Rearrange pages
+    Click Element    //*[@id="MultipleSelectBox_DropDown"]/li[2]/span[1]
+    Click Element    id=moveToSub
+    Page Should Contain Element    //div[@id='dataPageRearrange']/div/div[@class='treeview']/ul[@id='MultipleSelectBox_DropDown']/li/ul/li/span    NormalPage
+    Mouse Over    button_e0aa021e21dddbd6d8cecec71e9cf564
+    Click Button    button_e0aa021e21dddbd6d8cecec71e9cf564
+
+Then show normal page to sub level
+    Wait Until Page Contains ELement    //div[@class='step3hover']/div[1]/table/tbody/tr/td[2]/div/div[@pagename='NormalPage']
+
+When move normal page back to main level
+    Click Element    rearrange
+    Wait Until Page Contains    Rearrange pages
+    Click Element    //*[@id='MultipleSelectBox_DropDown']/li/ul/li/span[1]
+    Click Element    id=moveToMain
+    Page Should Contain Element    //div[@id='dataPageRearrange']/div/div[@class='treeview']/ul[@id='MultipleSelectBox_DropDown']/li[2]/span[1]    NormalPage
+    Mouse Over    button_e0aa021e21dddbd6d8cecec71e9cf564
+    Click Button    button_e0aa021e21dddbd6d8cecec71e9cf564
+
+Then show normal page to main level
+    Wait Until Page Contains ELement    //div[@class='step3hover']/div[1]/table/tbody/tr/td[2]/div/div[@pagename='NormalPage']
+
+
+When user want to edit company name
+    Click Link    //a[@id='companynotshow']
+    Wait Until Page Contains    Insert Company Name
+    Select Frame    layerData_editFrame
+    assertText    html/body/div[1]    New Name
+Then save new company name
+    Click Button    save
+
+
+### published website all component ###
+Given user want to add component
+    Go to    ${WEBROOT}/sitebuilder/PageContent/
+
+when user add component
+    [Arguments]    ${component_id}
+    Click Button    id=addPageAndCompoContent
+    Click Element    addCompoContent
+    Click Element    ${component_id}
+    Click Button    button_e0aa021e21dddbd6d8cecec71e9cf564
+
+Then user successfully added
+    [Arguments]    ${text_component}
+    Sleep    10
+    Wait Until Page Contains    ${text_component}
+
+Given user want to publish website
+    Go to    ${WEBROOT}/sitebuilder/PageContent/
+
+when user publish a project
+    Sleep    3
+    Click Link    Publish
+    Page Should Contain Element    publishFormData    Publish website to :
+    Click Element    css=a.btnDialog
+
+Then user can view online form in the website
+    ${homepath}    Get Location
+    Go to    ${homepath}/Online-Form.php
+    Page Should Contain    First Name *
+
+Then user can view guest book in the website
+    ${homepath}    Get Location
+    Go to    ${url}/Guestbook.php
+    Page Should Contain    Thank you for visiting my site. Here you can leave your comments.
+
+And Update database
+    Go to    ${WEBROOT}/sitebuilder/createdbforcomponent/
+    Click Element    id=DialogOpenDBMain
+    Input Text    dbName    ${dbname_test}
+    Input Text    dbUserName    ${dbuser_test}
+    Input Text    Password    ${dbpassword_test}
+    Click Element    xpath=.//*[@id='createdb']/div[3]/input[1]
+    Sleep    1
+
+And Update system to login
+    Go to    ${WEBROOT}/sitebuilder/ComponentUserAndSystem/
+    Click Element    id=rvComponent
+    Input Text    config[adminUserName]    ${dbname_test}
+    Input Text    config[adminPassword]    ${dbpassword_test}
+    Input Text    config[adminPassword2]    ${dbpassword_test}
+    Click Button    id=submit_componentconfig
+    Reload Page
+    Go to    ${WEBROOT}/sitebuilder/PageContent/
+    
+Then user can view newsletter in the website
+    Select Window    title=Rvglobalsoft :: Publish
+    Sleep    30
+    ${homepath}    Get Location
+    Should Match Regexp    ${homepath}    [a-z]+.?[a-z]+[0-9]+.?rvglobalsoft.net
+    ${homepath}    Get Location
+    Go to    ${homepath}/Online-Form.php
+    Page Should Contain Element    id=RVS_BlockNewsletter
+
+Then user can view blog in the website
+    [Arguments]    ${link}
+    Click Link    ${link}
+    Page Should Contain    No entries to print
+
+Then user can view faq in the website
+    [Arguments]    ${link}
+    Click Link    ${link}
+    Page Should Contain Link    xpath=/html/body/div/section/div/div/div/div[3]/div[1]/div/div[1]/div/div[1]/a    Advanced Search
+
+Then user can view photo gallery in the website
+    [Arguments]    ${link}
+    Click Link    ${link}
+    Page Should Contain Element    id=galleria
+    Close Window
+    Select Window    title=Rvglobalsoft :: STEP3
+
+## Fail case ##
+when add component
+    [Arguments]    ${component_id}
+    Click Button    id=addPageAndCompoContent
+    Click Element    addCompoContent
+    Click Element    ${component_id}
+    Input Text    componentPageName        ${EMPTY}
+    Click Button    button_e0aa021e21dddbd6d8cecec71e9cf564
+
+Then user cannot add component without page name
+    Page Should Contain Element   id=message    Add component failure!
+    
+Then user unsuccessfully added
+    [Arguments]    ${message}
+    Page Should Contain    ${message}
+
+
+*** Variables ***
+${255charecters}    RVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSiteBu
+${500charecters}    RVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSiteb

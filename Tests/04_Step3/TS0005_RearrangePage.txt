@@ -1,0 +1,29 @@
+*** Settings ***
+Documentation     Rearrange Page
+Suite Setup       Run Step 3 Page Suite Setup
+Suite Teardown    Run Step 3 Page Suite Teardown
+Default Tags      User    UserStep3
+Resource          ../Step3PageSuite.txt
+
+*** Test Cases ***
+TC01: Move Up Page
+	Given user want go to main menu    STEP3
+	When user add normal page
+	When Move up
+	Then show normal page is the first page
+
+TC02: Move Down Page
+	Given user want go to main menu    STEP3
+	When move down normal page
+	Then show home page is the first page
+
+TC03: Move To Sub Level Page
+	Given user want go to main menu    STEP3
+	When move normal page to sub level
+	Then show normal page to sub level
+
+TC04: Move To Main Level Page
+	Given user want go to main menu    STEP3
+	When move normal page back to main level
+	Then show normal page to main level
+

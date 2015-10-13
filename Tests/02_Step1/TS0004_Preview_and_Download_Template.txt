@@ -1,0 +1,12 @@
+*** Settings ***
+Documentation     Preview and Download Template
+Suite Setup       Run User Page Suite Setup
+Suite Teardown    Run User Page Suite Teardown
+Default Tags      User    UserStep1
+Resource          ../Step1PageSuite.txt
+
+*** Test Cases ***
+Preview a Template
+	Given user want to search template
+	When search template by    Books
+	Then wait until page display preview

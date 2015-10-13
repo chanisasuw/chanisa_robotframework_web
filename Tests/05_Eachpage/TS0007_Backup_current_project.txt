@@ -1,0 +1,29 @@
+*** Settings ***
+Documentation    .Backup a current project
+Suite Setup       Run All Pages Suite Setup
+Suite Teardown    Run All Pages Suite Teardown
+Default Tags      User    AllPages
+Resource          ../AllPagesSuite.txt
+
+
+*** Test Cases ***
+TC01: User backup current project at Step Home
+    Given a user go to RVSitebuilder    link=HOME
+    when user backup a project
+    then user has been saved file on my destination drive
+
+TC02: User backup current project at Step1
+    Given a user go to RVSitebuilder    link=STEP1
+    when user backup a project
+    then user has been saved file on my destination drive
+
+TC03: User backup current project at Step2
+    Given a user go to RVSitebuilder    link=STEP2
+    when user backup a project
+    then user has been saved file on my destination drive
+
+TC04: User backup current project at Step3
+    Given a user go to RVSitebuilder    link=STEP3
+    when user backup a project
+    then user has been saved file on my destination drive
+    Delete project

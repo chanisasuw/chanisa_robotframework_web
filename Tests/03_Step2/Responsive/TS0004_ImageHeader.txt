@@ -1,0 +1,29 @@
+*** Settings ***
+Documentation     UserStep2 Test suite
+Suite Setup       Run Step 2 Reponsive Suite Setup
+Suite Teardown    Run Step 2 Page Suite Teardown
+Default Tags      User    UserStep2
+Resource          ../../Step2PageSuite.txt
+
+*** Test Cases ***
+## Header Banner ##
+Update existing image header 1
+    Given user want to update template
+    when user update existing image   
+    Then show a new image flip on header banner
+
+Add an image to slide header banner
+    Given user want to update template
+    When user add a new image    ${CURDIR}/../../../File/test.jpg
+    Then the system will crop automatically
+    Then show header 2 in slide image
+
+Add any file is not suport to slide header banner
+    Given user want to update template
+    When user add a new image    ${CURDIR}/TS0001_HeaderSettings.txt
+    Then user can not upload image
+
+Delete image header banner
+    Given user want to update template
+    When user delete image
+    Then image was deleted not show in header banner

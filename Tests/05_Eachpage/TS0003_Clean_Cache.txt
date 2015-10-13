@@ -1,0 +1,29 @@
+*** Settings ***
+Documentation     Clean Cache
+Suite Setup       Run All Pages Suite Setup
+Suite Teardown    Run All Pages Suite Teardown
+Default Tags      User    AllPages
+Resource          ../AllPagesSuite.txt
+
+
+*** Test Cases ***
+TC01: Clean Cache RVSiteBuilder Home Page
+    Given a user want to clean cache RVSitebuilder    link=HOME
+    when user clean cache
+    then RVSiteBuilder clean cache success
+
+TC02: Clean Cache RVSiteBuilder Step1
+    Given a user want to clean cache RVSitebuilder    link=STEP1
+    when user clean cache
+    then RVSiteBuilder clean cache success
+
+TC03: Clean Cache RVSiteBuilder Step2
+    Given a user want to clean cache RVSitebuilder    link=STEP2
+    when user clean cache
+    then RVSiteBuilder clean cache success
+
+TC04: Clean Cache RVSiteBuilder Step3
+    Given a user want to clean cache RVSitebuilder    link=STEP3
+    when user clean cache
+    then RVSiteBuilder clean cache success
+    Delete project

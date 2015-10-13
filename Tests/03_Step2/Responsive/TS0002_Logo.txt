@@ -1,0 +1,45 @@
+*** Settings ***
+Documentation     UserStep2 Test suite
+Suite Setup       Run Step 2 Reponsive Suite Setup
+Suite Teardown    Run Step 2 Page Suite Teardown
+Default Tags      User    UserStep2   HeaderBanner
+Resource          ../../Step2PageSuite.txt
+
+*** Test Cases ***
+## Branding ##
+No file to add logo
+    Given user want to update template
+    When user not upload file
+    Then user cannot upload logo and show error message select file
+    
+Add logo not support to logo
+    Given user want to update template
+    When user upload my logo to template    ${CURDIR}/TS0001_HeaderSettings.txt
+    Then user cannot upload logo and show error message file not supported
+
+Add a new logo
+    Given user want to update template
+    When user upload my logo to template    ${CURDIR}/../../../File/rvglobalsoft.jpg
+    Then show my logo in current layout template
+
+Update logo
+    Given user want to update template
+    When user change my logo    ${CURDIR}/../../../File/test.jpg
+    Then show a new logo in current layout template
+
+Update logo not support to logo
+    Given user want to update template
+    When user change my logo    ${CURDIR}/TS0001_HeaderSettings.txt
+    Then user cannot upload logo and show error message file not supported
+
+Lock and Unlock logo
+    Given user want to update template
+    When user lock the logo
+    Then show logo is locked
+    When user unlock the logo
+    Then show logo is unlocked
+
+Delete logo
+    Given user want to update template
+    When user delete my logo
+    Then not show logo in current layout template

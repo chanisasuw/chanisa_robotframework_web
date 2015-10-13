@@ -1,0 +1,24 @@
+*** Settings ***
+Documentation     Setting Memeber Page
+Suite Setup       Run Step 3 Page Suite Setup
+Suite Teardown    Run Step 3 Page Suite Teardown
+Default Tags      User    UserStep3
+Resource          ../Step3PageSuite.txt
+
+
+*** Test Cases ***
+TC01: Set member page
+	Given user want go to main menu    STEP3
+	And select page option to member page    Set Member Page
+	Then page option is change to member page
+
+TC02: Unset member page
+	Given user want go to main menu    STEP3
+	When select page option to Unset member page    Unset Member Page
+	Then page should not display icon
+
+TC03: Set Home Page
+	Given user want go to main menu    STEP3
+	When user add normal page
+	When select option to homepage    Set Home Page
+	Then home icon move to the other page

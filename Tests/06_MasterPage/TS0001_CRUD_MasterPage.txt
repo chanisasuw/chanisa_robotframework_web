@@ -1,0 +1,60 @@
+*** Settings ***
+Documentation     Master Page
+Suite Setup       Run Master Page Suite Setup
+Suite Teardown    Run Master Page Suite Teardown
+Default Tags      User    AllPages
+Resource          ../MasterPageSuite.txt
+
+*** Variables ***
+${name}    six_test_QA
+
+*** Test Cases ***
+TC01: Create a new master page 16 Grid Column
+	Go To Step3 Page
+	Given a user want to create a new master page
+	when user create master page    ${name}    16_0
+	then user have new master page    ${name}    16 Grid Column
+
+TC02: List master page
+	Given a user want to view all master page
+	when user view all master page of current project
+	then show all master page of this project
+
+TC03: List master page in form add page
+	Given a user want to view master page in form add page
+	when user view all master page in form add page
+	then show all master page for use master page
+
+TC04: Edit master page
+	Given a user want to view all master page
+	when user edit master page
+	then show edit layout page    ${name}
+
+TC05: Delete master page
+	Given user want to delete master template
+	when delete master page
+	then not show master page was deleted    ${name}
+
+TC06: No Master Page in add page form
+	Given a user want to view master page in form add page
+	when add page and select master page
+	then this project don't have master page    ${name}
+
+TC07: Add Page and use master page
+	Given a user want to create a new master page
+	when user create master page    ${name}    16_0
+	then user have new master page    ${name}    16 Grid Column
+	Reload Page
+	Given a user want to view master page in form add page
+	when add page with master page
+	then show a new page and master page    ${name}
+
+TC08: Cannot delete master page if master page has been used
+	Given user want to delete master template
+	when delete master page
+	then user cannot delete master page
+
+TC09: Edit Master Page of page
+	Given user want to edit master page    ${name}
+	when edit master page
+	then show edit layout page    ${name}

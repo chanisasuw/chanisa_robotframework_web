@@ -1,0 +1,19 @@
+*** Settings ***
+Documentation     Restore a project
+Suite Setup       Run Home Page Suite Setup
+Suite Teardown    Run Home Page Suite Teardown
+Default Tags      User    UserHome
+Resource          ../HomePageSuite.txt
+
+*** Test Cases ***
+TC01: Restroe a project
+	Close dialog auto create project
+    Given a user want to restore a new project
+    when user upload a project
+    then rvsitebuilder has a new project
+
+TC02: Restore an invalid project file not supported
+    Given a user want to restore a new project
+    when user upload a project if file type invalid
+    then user cannot restore no supported file
+	Delete project

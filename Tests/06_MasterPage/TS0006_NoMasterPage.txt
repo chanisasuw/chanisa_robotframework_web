@@ -1,0 +1,22 @@
+*** Settings ***
+Documentation     Master Page
+Suite Setup       Run Master Page Suite Setup
+Suite Teardown    Run Master Page Suite Teardown
+Default Tags      User    AllPages
+Resource          ../MasterPageSuite.txt
+
+
+*** Test Cases ***
+TC01: Non-responsive project cannot manage master page
+	Given user want to manage normal project
+	When user open step 3
+	Then user cannot create a new master page
+	and show master page
+
+TC02: Responsive project cannot manage master page
+	Given user want to manage old responsive project
+	When user open step 3
+	Then user cannot create a new master page
+	and show master page
+
+# TC02: UI-Kit project cannot manage master page

@@ -1,0 +1,259 @@
+*** Settings ***
+Resource        ../Resources/Common.txt
+Resource        ../Resources/Setup.txt
+
+# *** Variables ***
+#     ${pjName} =    'designstudio'
+
+
+*** Keywords ***
+
+###  setting suite  ####
+Run User Page Suite Setup
+    Import Resource    ${CURDIR}/../Resources/Common_kw.txt
+    Log    Run UserPage suite setup on ${CPMODE}
+    Load Resources by CP Mode
+    Do Login To Control Panel With User
+    Go to    ${WEBROOT}
+    Create a project first
+    Go To Step 1
+
+###  setting suite  ####
+Go To Default Page
+    Go to    ${WEBROOT}
+
+Go To Step 1
+    Go to    ${WEBROOT}/sitebuilder/rvscategory/
+
+Run User Page Suite Teardown
+    Delete project
+    Logout cPanel
+    Log    Run UserPage suite teardown
+    Do Close Browser
+
+When select a category
+    Click Button    id=category_17
+    Scroll Page To Location    0    1000
+
+Then show template in category
+    Page Should Contain Element    xpath=.//*[@id='newDataCategory']/div[1]/div/div[2]/div/a
+    Scroll Page To Location    0    4000
+    Click Link    2
+    Page Should Contain Element    id=img17-326
+
+Given user want to search template
+    Sleep    ${DELAY}
+
+Given user want go to Home menu
+    Sleep    ${DELAY}
+    Mouse Over    button_d3d2e617335f08df83599665eef8a418
+    Click Button    button_d3d2e617335f08df83599665eef8a418
+
+Given user want to restore old DIY template
+    Click Link    id=FrmRestoreProject
+    Choose File    import-project-file    ${CURDIR}/../File/iamsabai_d849e4f7d0490ea4df945c98e30ab0a0.tar.gz
+    Click Button    button_91412465ea9169dfd901dd5e7c96dd99
+    Wait Until Page Contains    Are you sure you want to restore project?
+    Sleep    0.2
+    Click Button    button_10ac3d04253ef7e1ddc73e6091c0cd55
+    Click Button    button_da364eb37e143f6b2b5559aa03f5913a
+    Wait Until Page Contains Element    xpath=.//div[@class='template-block-current']
+
+Given user want to restore old normal template
+    Click Link    id=FrmRestoreProject
+    Choose File    import-project-file    ${CURDIR}/../File/rainbowt_f46324624a17dcdd2a62a9c44c1a00ba.tar.gz
+    Click Button    button_91412465ea9169dfd901dd5e7c96dd99
+    Wait Until Page Contains    Are you sure you want to restore project?
+    Sleep    0.2
+    Click Button    button_10ac3d04253ef7e1ddc73e6091c0cd55
+    Wait Until Page Contains    Latest Update:
+
+#search template by invalid value
+When search template by
+    [Arguments]    ${CategoryLabel}
+    Click Element    id=buttonSearch
+    Input Text    suggestBox    ${CategoryLabel}
+    Press Key    suggestBox    \\13
+
+Then display no template
+    Page Should Contain    There's no template based on your word, please try again for other categories.
+    Click Button    btnBack
+
+#search template by valid value
+When search template by category that not have template
+    Select From List By Label    listCategory    Blog
+
+Then display template list
+    Page Should Contain Element    //div[@id='showcurrent']
+
+#Change Template
+When change template from old template to Responsive template
+    Go To Step 1
+    Sleep    2
+    Click Button    id=category_2
+    Scroll Page To Location    0    1000
+    Mouse Over    //div[@class='displaynone'][1]/div[@class='templateCate'][1]/img
+    Click Link    //div[@class='displaynone'][1]/div[@class='templateCate'][1]/div[2]/span/span/a
+
+Then message alert doesn't allow switch old template to Responsive Template
+    Wait Until Page Contains    RVSitebuilder doesn't allow to switch template between Normal Template and Responsive Template
+    Mouse Over    button_d3d2e617335f08df83599665eef8a418
+    Click Button    button_d3d2e617335f08df83599665eef8a418
+
+When change old normal template to responsive template
+    Go To Step 1
+    Sleep    2
+    Click Button    id=category_2
+    Scroll Page To Location    0    1000
+    Mouse Over    //div[@class='displaynone'][1]/div[@class='templateCate'][1]/img
+    Click Link    //div[@class='displaynone'][1]/div[@class='templateCate'][1]/div[2]/span/span/a
+
+When select a template
+    Click Button    id=category_17
+    Scroll Page To Location    0    1000
+    Mouse Over    //div[@class='displaynone'][1]/div[@class='templateCate'][1]/img
+    Click Link    //div[@class='displaynone'][1]/div[@class='templateCate'][1]/div[2]/span/span/a
+
+Then show a new template from selected at Step 2
+    Sleep    5
+    ${step2path}    Get Location
+    Should Match Regexp    ${step2path}    \/sitebuilder\/adjustStyle\/
+
+# When old template go to Create DIY template
+Given old template go to Create DIY template
+    Sleep    2
+
+When go to create DIY template
+    Click Element    xpath=.//*[@id='sidebar']/div[2]/div[2]/a
+    Wait Until Page Contains    Your project is currently using Normal Template, which cannot use function "DIY Template".
+
+Given old template go to Import template
+    Sleep    2
+
+When go to import template menu
+    Click Element    id=uploadTemplate
+    Wait Until Page Contains    Difference between responsive and normal template:
+
+Then old template cannot create a new template
+    Mouse Over    button_d3d2e617335f08df83599665eef8a418
+    Click Button    button_d3d2e617335f08df83599665eef8a418
+
+Then select template and submit
+    # Mouse Down On Link    //div[@class='templateIconControl']/span/span/a/span
+    Scroll Page To Location    0    1000
+    Mouse Over    //div[@class='displaynone'][1]/div[@class='templateCate'][1]/img
+    Click Link    //div[@class='displaynone'][1]/div[@class='templateCate'][1]/div[2]/span/span/a
+    Wait Until Page Contains Element    submitSave
+
+#Create DIY Template
+Given user want create diy template
+    [Arguments]    ${ButtonValue}
+    Click Link    STEP1
+    Click Element    xpath=.//*[@id='sidebar']/div[2]/div[2]/a
+    Page Should Contain    Create DIY Template
+    Mouse Over    ${ButtonValue}
+    Click Button    ${ButtonValue}
+
+when user create DIY Tempalte
+    Page Should Contain    Please wait
+    Sleep    ${DELAY}
+
+When select DIY Template
+    Click Link     //a[@class='urlSelect']
+
+then a user can design unique template
+    Page Should Contain Button    Update Template
+    ${homepath}    Get Location
+    Should Match Regexp    ${homepath}    \/sitebuilder\/adjustStyle\/
+
+then a user doesn't create a new diy template
+    ${step1path}    Get Location
+    Should Match Regexp    ${step1path}    \/sitebuilder\/rvscategory\/
+
+#Import Template
+Given import Responsive Template
+    [Arguments]    ${ImportTemplatePath}
+    Click link    STEP1
+    Click Element    id=uploadTemplate
+    Page Should Contain    Only .zip and .tar.gz file extension are supported
+    Choose File    fileUploadTemplate    ${ImportTemplatePath}
+
+Given user want to import template
+    [Arguments]    ${ImportTemplatePath}
+    Click link    STEP1
+    Click Element    id=uploadTemplate
+    Page Should Contain    Only .zip and .tar.gz file extension are supported
+    Choose File    fileUploadTemplate    ${ImportTemplatePath}
+
+When user import template valid file type
+    Wait Until Page Contains    Please wait
+    Sleep    ${DELAY}
+
+Then Message Alert Successfully
+    Page Should Contain Element    css=div.ui-dialog-content.ui-widget-content    Template has been successfully imported.
+
+#import invalid template
+When user import template invalid file type
+    Wait Until Page Contains    Only .zip and .tar.gz file extension are supported.File name pattern is invalid. The correct one is {colorgroup}_{picturename}_{menustyle}
+    Sleep    ${DELAY}
+Then close error page invalid file type
+    Click Button    xpath=(//button[@type='button'])[2]
+    Wait Until Page Contains    Only .zip and .tar.gz file extension are supported
+    Click Button    id=button_d3d2e617335f08df83599665eef8a418
+
+
+When user import template invalid folder name
+    Sleep    3
+    Wait Until Page Contains     File name pattern is invalid. The correct one is {colorgroup}_{picturename}_{menustyle}
+
+Then close error page invalid folder name
+    Click Element    //div[@class='ui-dialog ui-widget ui-widget-content ui-corner-all ui-draggable ui-resizable ui-dialog-buttons'][2]/div[4]/div/button
+    Sleep    3
+    Click Button    button_d3d2e617335f08df83599665eef8a418
+
+
+When user import template invalid data structure
+    Wait Until Page Contains Element    //div[@class='ui-dialog ui-widget ui-widget-content ui-corner-all ui-draggable ui-resizable ui-dialog-buttons'][2]
+Then close error page invalid data structure
+    Click Element    //div[@class='ui-dialog ui-widget ui-widget-content ui-corner-all ui-draggable ui-resizable ui-dialog-buttons'][2]/div[4]/div/button
+    Click Button    button_d3d2e617335f08df83599665eef8a418
+
+#Preview Template
+Then wait until page display preview
+    Mouse Down On Link    //div[@class='templateIconControl']/span/span/div/a[1]
+    Click Element    //div[@class='templateIconControl']/span/span/div/a[1]
+    Wait Until Page Contains Element    //div[@class='ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix']
+    Sleep    3
+    Click Element    //a[@class='ui-dialog-titlebar-close ui-corner-all'][@role='button']
+
+
+#Download Template
+Then user click download template
+    Mouse Down On Link    //a[@focusview='pro_2-831-1_red_lady_2']
+    Click Link    //a[@class='jq_DownloadTemStep2 download'][1]
+    Choose Ok On Next Confirmation
+#Delete Template
+Then user click delete template icon
+    Mouse Down On Image    //img[@src='http://192.168.100.105/workspaces/rvsitebuilder/www/themes/default/sitebuilder/images5/i-del.gif'][1]
+    Sleep    ${DELAY}
+
+#Change template list STEP1
+Then select page number for display template list
+    Click Link    2
+    Wait Until Page Contains Element    //img[@id='img1-957']
+
+
+When user want to delete all project
+    :FOR  ${var}  IN RANGE  3
+    \  Click Element    //table[@class='frameproj_cur']/tbody/tr/td[3]/div[2]/table/tbody/tr/td[5]/a
+    \  Wait Until Page Contains    Removed project cannot be restored back to program.
+    \  Click Button    button_1063e38cb53d94d386f21227fcd84717
+    \  Wait Until Page Contains    Project has been successfully removed.
+    \  Click Button    button_d3d2e617335f08df83599665eef8a418
+    \  Wait Until Page Contains    Please wait
+    \  Sleep    ${DELAY}
+
+Then after remove project
+    :FOR  ${proName}  IN  Importproject  Rainbow Tech-2  designstudio-1   #  Importproject
+    \  Page Should Not Contain    ${proName}
+

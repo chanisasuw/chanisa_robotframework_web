@@ -1,0 +1,12 @@
+*** Settings ***
+Documentation     UserStep2 Test suite
+Suite Setup       Run Step 2 Reponsive Suite Setup
+Suite Teardown    Run Step 2 Page Suite Teardown
+Default Tags      User    UserStep2
+Resource          ../../Step2PageSuite.txt
+
+*** Test Cases ***
+Custom Background
+	Given user want to update template
+	When user custom background
+	Then show a new background in layout template

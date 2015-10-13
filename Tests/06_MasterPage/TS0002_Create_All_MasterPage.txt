@@ -1,0 +1,43 @@
+*** Settings ***
+Documentation     Master Page
+Suite Setup       Run Master Page Suite Setup
+Suite Teardown    Run Master Page Suite Teardown
+Default Tags      User    AllPages
+Resource          ../MasterPageSuite.txt
+
+*** Test Cases ***
+TC01: Create a new master page 16 Grid Column
+	Go To Step3 Page
+	Given a user want to create a new master page
+	when user create master page    six    16_0
+	then user have new master page    six    16 Grid Column
+
+TC02: Create a new master page 4-12 Grid Column
+	Given a user want to create a new master page
+	when user create master page    four-twelve    4-12_0
+	then user have new master page    four-twelve    4-12 Grid Column
+
+TC03: Create a new master page 12-4 Grid Column
+	Given a user want to create a new master page
+	when user create master page    twelve-four    12-4_0
+	then user have new master page    twelve-four    12-4 Grid Column
+
+TC04: Create a new master page One-Third Grid Column
+	Given a user want to create a new master page
+	when user create master page    One-Third    one-third_0
+	then user have new master page    One-Third    one-third Grid Column
+
+TC05: Create a new master page Third-One Grid Column
+	Given a user want to create a new master page
+	when user create master page    Third-One    third-one_0
+	then user have new master page    Third-One    third-one Grid Column
+
+TC06: Create a new master page 4-8-4 Grid Column
+	Given a user want to create a new master page
+	when user create master page    four-eighth-four    4-8-4_0
+	then user have new master page    four-eighth-four    4-8-4 Grid Column
+
+TC07: Create a new master page One-One-One Grid Column
+	Given a user want to create a new master page
+	when user create master page    One-One-One    one-one-one_0
+	then user have new master page    One-One-One    one-one-one Grid Column

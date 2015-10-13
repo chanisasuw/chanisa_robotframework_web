@@ -1,0 +1,12 @@
+*** Settings ***
+Documentation     Select a Category
+Suite Setup       Run User Page Suite Setup
+Suite Teardown    Run User Page Suite Teardown
+Default Tags      User    UserStep1
+Resource          ../Step1PageSuite.txt
+
+*** Test Cases ***
+Select category
+	Given user want to search template
+	When select a category
+	Then show template in category

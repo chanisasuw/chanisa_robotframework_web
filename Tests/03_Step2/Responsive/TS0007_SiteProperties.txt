@@ -1,0 +1,42 @@
+*** Settings ***
+Documentation     UserStep2 Test suite
+Suite Setup       Run Step 2 Reponsive Suite Setup
+Suite Teardown    Run Step 2 Page Suite Teardown
+Default Tags      User    UserStep2
+Resource          ../../Step2PageSuite.txt
+
+*** Test Cases ***
+Update Head tag
+	Given user want to update template
+	When user edit head tag
+	Then head tag successfully updated
+
+Update Body tag fail
+	Given user want to update template
+	When user update body tag
+	Then user cannot add body tag
+
+Update CSS
+	Given user want to update template
+	When user update css
+	Then css successfully updated
+
+
+# Update Head tag fail if website title more than 500 charecters
+# 	Given user want to update template
+# 	When user update head tag    ${500charecters}    RVSitebuilder    Testing RVSitebuilder    RVSitebuilder
+# 	Then head tag unsuccessfully updated
+
+# Update Head tag fail if meta keyword more than 500 charecters
+# 	Given user want to update template
+# 	When user update head tag    RVGlobalsoft    ${500charecters}    Testing RVSitebuilder    RVSitebuilder
+# 	Then head tag unsuccessfully updated
+
+# Update Head tag fail if meta description more than 500 charecters
+# 	Given user want to update template
+# 	When user update head tag    RVGlobalsoft    RVSitebuilder    ${500charecters}    RVSitebuilder
+# 	Then head tag unsuccessfully updated
+
+
+*** Variables ***
+${500charecters}    RVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSitebuilderRVSiteb
