@@ -1,0 +1,37 @@
+*** Variables ***
+${SERVER}         ${EMPTY}
+${AdminPort}      ${EMPTY}
+${AdminPath}      ${EMPTY}
+${AdminName}      ${EMPTY}
+${AdminPassword}    ${EMPTY}
+${UserPort}       ${EMPTY}
+${UserName}       ${EMPTY}
+${UserPassword}    ${EMPTY}
+${UserPath}       ${EMPTY}
+${CP TOKEN}       ${EMPTY}
+${WEBROOT}        ${EMPTY}    # ไม่ต้อง define จะไป defined ให้ตอน run suite setup เพราะจะต้องเอาค่า CP Token มาใส่ด้วย
+
+*** Keywords ***
+Do Login To Control Panel With Admin
+    Log    Do Login To Control Panel With Admin
+    Do Open Browser    ${SERVER}:${AdminPort}
+    Log    User "${AdminName}" logs in with password "${AdminPassword}"
+    Input Text    username    ${AdminName}
+    Input Text    password    ${AdminPassword}
+    Click Button    Login
+    Sleep    3
+    Set Suite Variable    ${WEBROOT}    ${SERVER}:${UserPort}${UserPath}
+    Log    Go to ${WEBROOT}
+    Go To    ${WEBROOT}
+
+Do Login To Control Panel With User
+    Log    Do Login To Control Panel With User
+    Do Open Browser    ${SERVER}:${UserPort}
+    Log    User "${UserName}" logs in with password "${UserPassword}"
+    Input Text    username    ${UserName}
+    Input Text    password    ${UserPassword}
+    Click Button    Login
+    Sleep    3
+    Set Suite Variable    ${WEBROOT}    ${SERVER}:${UserPort}${UserPath}
+    Log    Go to ${WEBROOT}
+    Go To    ${WEBROOT}

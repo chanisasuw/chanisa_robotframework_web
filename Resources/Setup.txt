@@ -1,0 +1,66 @@
+*** Settings ***
+Resource          ../Resources/Common.txt
+
+*** Keyword ***
+Create a project first
+	Input Text    xpath=//input[@id='project_name']    QA Test
+    Click Button    Save
+    Sleep    ${DELAY}
+    Wait Until Page Contains Element    listCategory
+
+Crete a project for Step2
+    Input Text    id=project_name    QA Test
+    Input Text    id=project_company    RVGlobalsoft
+    Input Text    id=project_slogan     Put The right man in the right job.
+    Click Button    Save
+    Sleep    ${DELAY}
+    Wait Until Page Contains Element    listCategory
+
+Delete project
+    Go to    ${WEBROOT}
+    Scroll Page To Location    0    2000
+	Page Should Contain    Current Project
+	Click Link    Delete
+    Page Should Contain    Removed project cannot be restored back to program.
+    Click Button    Remove
+    Page Should Contain Element    removeProject-message
+    Click Button    button_d3d2e617335f08df83599665eef8a418
+    Go to    ${WEBROOT}
+    Page Should Not Contain Element    divShowCurrent
+
+Logout cPanel
+    Reload Page
+    Mouse Over    button_d3d2e617335f08df83599665eef8a418
+    Click Button    button_d3d2e617335f08df83599665eef8a418
+    Click Element    css=a[title="Logout"]
+    ${logout}    Get Location
+    Should Match Regexp    ${logout}    \/logout
+
+Scroll Page To Location
+    [Arguments]    ${x_location}    ${y_location}
+    Execute JavaScript    window.scrollTo(${x_location},${y_location})
+
+Restore project responsive
+    Mouse Over    button_d3d2e617335f08df83599665eef8a418
+    Click Button    button_d3d2e617335f08df83599665eef8a418
+    Page Should Contain Element    xpath=.//div[3]/div[4]/a[@class='groupOptions']
+    Click Element    xpath=.//div[3]/div[4]/a[@class='groupOptions']
+    Click Link    id=FrmRestoreProject
+    Page Should Contain Element    frm-restore-project    Choose a backup file in .tar, .tar. gz format
+    Choose File    import-project-file    ${CURDIR}/../File/responsiveforstep2.tar.gz
+    Click Button    button_91412465ea9169dfd901dd5e7c96dd99
+    Sleep    10
+    Page Should Contain Element    message    Are you sure you want to restore project?
+    Mouse Over    button_10ac3d04253ef7e1ddc73e6091c0cd55
+    Click Button    button_10ac3d04253ef7e1ddc73e6091c0cd55
+    Sleep    3
+    Wait Until Page Contains    Project Name: Test Project Step2
+
+Import New responsive Template
+    Sleep   ${DELAY}
+    Click Element    id=uploadTemplate
+    Page Should Contain    Only .zip and .tar.gz file extension are supported
+    Choose File    fileUploadTemplate    ${CURDIR}/../File/green_picuikitnew_2.tar.gz
+    Wait Until Page Contains    Please wait
+    Sleep    ${DELAY}
+    Page Should Contain Element    css=div.ui-dialog-content.ui-widget-content    Template has been successfully imported.

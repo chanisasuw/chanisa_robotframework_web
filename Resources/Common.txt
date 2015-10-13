@@ -1,0 +1,24 @@
+*** Settings ***
+Documentation     This ressource file contain common and globals variables sudo apt-get install python-tk
+Library           String
+Library           Collections
+Library           Selenium2Library    timeout=30
+Library           BuiltIn
+Library           DateTime
+Library           Screenshot
+Library           Dialogs
+
+*** Variables ***
+${BROWSER}        Firefox
+${DELAY}          1
+${CPMODE}         directadmin
+${REMOTEBROWSER}  ${EMPTY}
+# http://192.168.100.94:4444/wd/hub
+# http://203.78.98.250:4444/wd/hub/
+${CPSERVER}       ${EMPTY}
+${CPADMINPORT}    ${EMPTY}
+${CPUSERPORT}     ${EMPTY}
+${CPADMINNAME}    ${EMPTY}
+${CPADMINPASSWORD}    ${EMPTY}
+${CPUSERNAME}     ${EMPTY}
+${CPUSERPASSWORD}    ${EMPTY}

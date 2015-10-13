@@ -1,0 +1,52 @@
+*** Variables ***
+${SERVER}         ${EMPTY}
+${AdminPort}      ${EMPTY}
+${AdminPath}      ${EMPTY}
+${AdminName}      ${EMPTY}
+${AdminPassword}    ${EMPTY}
+${UserPort}       ${EMPTY}
+${UserName}       ${EMPTY}
+${UserPassword}    ${EMPTY}
+${UserPath}       ${EMPTY}
+${CP TOKEN}       ${EMPTY}
+${WEBROOT}        ${EMPTY}    # ไม่ต้อง define จะไป defined ให้ตอน run suite setup เพราะจะต้องเอาค่า CP Token มาใส่ด้วย
+${LogoutPath}     ${EMPTY}
+${LOGOUT}         ${EMPTY}
+
+*** Keywords ***
+Do Login To Control Panel With Admin
+    Log    Do Login To Control Panel With Admin
+    Do Open Browser    ${SERVER}:${AdminPort}
+    Log    User "${AdminName}" logs in with password "${AdminPassword}"
+    Input Text    user    ${AdminName}
+    Input Text    pass    ${AdminPassword}
+    Click Button    login_submit
+    ${This Location}    Get Location
+    Run Keyword And Ignore Error    Do Find CP Token    ${This Location}
+    Run Keyword If    '${CP TOKEN}' == '${EMPTY}'    Set Suite Variable    ${WEBROOT}    ${SERVER}:${AdminPort}${AdminPath}
+    Run Keyword If    '${CP TOKEN}' != '${EMPTY}'    Set Suite Variable    ${WEBROOT}    ${SERVER}:${AdminPort}/${CP TOKEN}${AdminPath}
+    Log    Set WEBROOT is ${WEBROOT}
+
+Do Login To Control Panel With User
+    Log    Do Login To Control Panel With Admin
+    Do Open Browser    ${SERVER}:${UserPort}
+    Log    User "${UserName}" logs in with password "${UserPassword}"
+    Input Text    user    ${UserName}
+    Input Text    pass    ${UserPassword}
+    Click Button    login_submit
+    ${This Location}    Get Location
+    Run Keyword And Ignore Error    Do Find CP Token    ${This Location}
+    Run Keyword If    '${CP TOKEN}' == '${EMPTY}'    Set Suite Variable    ${WEBROOT}    ${SERVER}:${UserPort}${UserPath}
+    Run Keyword If    '${CP TOKEN}' != '${EMPTY}'    Set Suite Variable    ${WEBROOT}    ${SERVER}:${UserPort}/${CP TOKEN}${UserPath}
+    Log    Set WEBROOT is ${WEBROOT}
+
+Do Find CP Token
+    [Arguments]    ${url}
+    ${match}    ${TOKEN}=    Should Match Regexp    ${url}    /(cpsess.*?)/
+    Set Suite Variable    ${CP TOKEN}    ${TOKEN}
+
+Do Logout cPanel
+    ${This Location}    Get Location
+    Run Keyword And Ignore Error    Do Find CP Token    ${This Location}
+    Run Keyword If    '${CP TOKEN}' != '${EMPTY}'    Set Suite Variable    ${WEBROOT}    ${SERVER}:${UserPort}/${CP TOKEN}${LogoutPath}
+    Log    Set WEBROOT is ${LOGOUT}

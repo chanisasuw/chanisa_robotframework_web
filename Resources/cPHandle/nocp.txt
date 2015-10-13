@@ -1,0 +1,26 @@
+*** Variables ***
+${SERVER}         http://192.168.100.105
+${AdminPort}      80
+${AdminPath}      /workspaces/rvsitebuilder/www/index.php/sitebuilder
+${UserPort}       80
+${UserPath}       /workspaces/rvsitebuilder/www/index.php/sitebuilder
+${ImgPath}        /workspaces/rvsitebuilder/www/themes/default/sitebuilder
+${WEBROOT}        ${EMPTY}
+
+
+*** Keywords ***
+Do Login To Control Panel With Admin
+    Log    Do Login To Control Panel With Admin
+    Set Suite Variable    ${CP TOKEN}    ${EMPTY}
+    Do Open Browser    ${SERVER}:${AdminPort}${CP TOKEN}
+    Set Suite Variable    ${WEBROOT}    ${SERVER}:${AdminPort}${CP TOKEN}${AdminPath}
+    Log    Go to ${WEBROOT}
+    Go To    ${WEBROOT}
+
+Do Login To Control Panel With User
+    Log    Do Login To Control Panel With User
+    Set Suite Variable    ${CP TOKEN}    ${EMPTY}
+    Do Open Browser    ${SERVER}:${AdminPort}${CP TOKEN}
+    Set Suite Variable    ${WEBROOT}    ${SERVER}:${UserPort}${CP TOKEN}${UserPath}
+    Log    Go to ${WEBROOT}
+    Go To    ${WEBROOT}

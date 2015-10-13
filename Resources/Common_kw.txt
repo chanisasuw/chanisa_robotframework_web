@@ -1,0 +1,67 @@
+*** Keywords ***
+Load Resources by CP Mode
+    Log    Load resources by CP Mode
+    Run Keyword If    '${CPMODE}' == 'nocp'    Load Mode Resources    ${CURDIR}/cPHandle/nocp.txt
+    Run Keyword If    '${CPMODE}' == 'cpanel'    Load Mode Resources    ${CURDIR}/cPHandle/cpanel.txt
+    Run Keyword If    '${CPMODE}' == 'directadmin'    Load Mode Resources    ${CURDIR}/cPHandle/directadmin.txt
+    Run Keyword If    '${CPSERVER}' != '${EMPTY}'    Setting New CP Server    ${CPSERVER}
+    Run Keyword If    '${CPADMINPORT}' != '${EMPTY}'    Setting New CP Admin Port    ${CPADMINPORT}
+    Run Keyword If    '${CPUSERPORT}' != '${EMPTY}'    Setting New CP User Port    ${CPUSERPORT}
+    Run Keyword If    '${CPADMINNAME}' != '${EMPTY}'    Setting New CP Admin Name    ${CPADMINNAME}
+    Run Keyword If    '${CPADMINPASSWORD}' != '${EMPTY}'    Setting New CP Admin Password    ${CPADMINPASSWORD}
+    Run Keyword If    '${CPUSERNAME}' != '${EMPTY}'    Setting New CP User Name    ${CPUSERNAME}
+    Run Keyword If    '${CPUSERPASSWORD}' != '${EMPTY}'    Setting New CP User Password    ${CPUSERPASSWORD}
+
+Load Mode Resources
+    [Arguments]    ${Resources File}
+    Log    Load NOCP resources
+    Import Resource    ${Resources File}
+
+Do Open Browser
+    [Arguments]    ${URL}
+    Log    Open browser ${BROWSER} and goto URL ${URL}
+    Run Keyword If    '${REMOTEBROWSER}' != '${EMPTY}'    Do Open Browser on Remote    ${URL}    ${BROWSER}    ${REMOTEBROWSER}
+    Run Keyword If    '${REMOTEBROWSER}' == '${EMPTY}'    Do Open Browser with out Remote    ${URL}    ${BROWSER}
+
+Do Open Browser with out Remote
+    [Arguments]    ${URL}    ${BROWSER}
+    Open Browser    ${URL}    ${BROWSER}
+    Maximize Browser Window
+    Set Selenium Speed    ${DELAY}
+
+Do Open Browser on Remote
+    [Arguments]    ${URL}    ${BROWSER}    ${REMOTEBROWSER}
+    Open Browser    ${URL}    ${BROWSER}    Browser 1    ${REMOTEBROWSER}
+    Maximize Browser Window
+    Set Selenium Speed    ${DELAY}
+
+Do Close Browser
+    Close All Browsers
+
+Setting New CP Server
+    [Arguments]    ${new server}
+    Set Suite Variable    ${SERVER}    ${new server}
+
+Setting New CP Admin Port
+    [Arguments]    ${new port}
+    Set Suite Variable    ${AdminPort}    ${new port}
+
+Setting New CP User Port
+    [Arguments]    ${new port}
+    Set Suite Variable    ${UserPort}    ${new port}
+
+Setting New CP Admin Name
+    [Arguments]    ${new admin name}
+    Set Suite Variable    ${AdminName}    ${new admin name}
+
+Setting New CP Admin Password
+    [Arguments]    ${new admin pass}
+    Set Suite Variable    ${AdminPassword}    ${new admin pass}
+
+Setting New CP User Name
+    [Arguments]    ${new user name}
+    Set Suite Variable    ${UserName}    ${new user name}
+
+Setting New CP User Password
+    [Arguments]    ${new user pass}
+    Set Suite Variable    ${UserPassword}    ${new user pass}
