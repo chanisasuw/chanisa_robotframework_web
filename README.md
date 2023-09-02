@@ -1,2 +1,3 @@
-# example_test
-for test
+# Robotframework
+
+This is an automation test built from Robotframework.
